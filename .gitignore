@@ -1,0 +1,11 @@
+# Binaries
+*.a
+*.o
+*.gb
+
+# Clangd
+.cache
+compile_commands.json
+
+# VSCode
+.vscode
