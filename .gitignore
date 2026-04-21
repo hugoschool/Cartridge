@@ -1,7 +1,9 @@
 # Binaries
+cartridge
 *.a
 *.o
 *.gb
+*.gba
 
 # Clangd
 .cache

@@ -1,17 +1,17 @@
-CC	?=	clang
-CFLAGS	:=	-Wall -Wextra -std=gnu17
+CXX	:=	clang++
+CFLAGS	:=	-Wall -Wextra -std=c++20
 CPPFLAGS	:=	-I include
 
-SRC	:=	src/main.c
+SRC	:=	src/main.cpp
 
-OBJ	:=	$(SRC:.c=.o)
+OBJ	:=	$(SRC:.cpp=.o)
 
-BINARY	:=	this_needs_a_change.gb
+BINARY	:=	cartridge
 
 all:	$(BINARY)
 
 $(BINARY):	$(OBJ)
-	$(CC) -o $(BINARY) $(OBJ) $(LDFLAGS) $(LDLIBS)
+	$(CXX) -o $(BINARY) $(OBJ) $(LDFLAGS) $(LDLIBS)
 
 clean:
 	$(RM) $(OBJ)
