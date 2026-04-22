@@ -1,5 +1,7 @@
 #include "argparse.hpp"
+#include "Header.hpp"
 #include <iostream>
+#include <fstream>
 
 // TODO: not very good argument parsing
 int main(int argc, char **argv)
@@ -26,6 +28,13 @@ int main(int argc, char **argv)
             headerParser.is_subcommand_used("check")) {
         std::string gba = headerCheckSubcommand.get<std::string>("gba");
 
+        std::ifstream fs(gba, std::ios_base::binary);
+        if (!fs.is_open()) {
+            std::cerr << "Couldn't open " << gba << std::endl;
+            return 1;
+        }
+        Cartridge::Header header;
+        fs.read((char *)&header, sizeof(Cartridge::Header));
         return 0;
     }
     return 1;
