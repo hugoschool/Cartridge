@@ -1,6 +1,6 @@
 CXX	:=	clang++
 CFLAGS	:=	-Wall -Wextra -std=c++20
-CPPFLAGS	:=	-I include
+CPPFLAGS	:=	-I include -I third_party
 
 SRC	:=	src/main.cpp
 
