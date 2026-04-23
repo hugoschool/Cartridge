@@ -2,7 +2,8 @@ CXX	:=	clang++
 CFLAGS	:=	-Wall -Wextra -std=c++20
 CPPFLAGS	:=	-I include -I third_party
 
-SRC	:=	src/main.cpp
+SRC	:=	src/main.cpp \
+		src/Header.cpp
 
 OBJ	:=	$(SRC:.cpp=.o)
 
