@@ -7,7 +7,8 @@ ifeq ($(ENV), dev)
 endif
 
 SRC	:=	src/main.cpp \
-		src/Header.cpp
+		src/Header.cpp \
+		src/Arguments.cpp
 
 OBJ	:=	$(SRC:.cpp=.o)
 
