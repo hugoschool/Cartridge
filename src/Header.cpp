@@ -16,7 +16,7 @@ void Cartridge::Header::readFromFile(std::string fileName)
     fs.read((char *)&_content, sizeof(Cartridge::HeaderContent));
 }
 
-const std::uint8_t Cartridge::Header::calculateComplementCheck() const
+std::uint8_t Cartridge::Header::calculateComplementCheck() const
 {
     std::uint8_t complementCheck = 0;
 
@@ -29,10 +29,9 @@ const std::uint8_t Cartridge::Header::calculateComplementCheck() const
     return complementCheck;
 }
 
-const std::uint32_t Cartridge::Header::littleToBigEndian(std::uint32_t little) const
+std::uint32_t Cartridge::Header::littleToBigEndian(std::uint32_t little) const
 {
     std::uint32_t bits[4];
-    std::uint32_t result;
 
     bits[0] = (little & 0x000000ff) << 24;
     bits[1] = (little & 0x0000ff00) << 8;
@@ -41,7 +40,7 @@ const std::uint32_t Cartridge::Header::littleToBigEndian(std::uint32_t little) c
     return bits[0] | bits[1] | bits[2] | bits[3];
 }
 
-const std::uint32_t Cartridge::Header::getFullRom(std::uint8_t rom[HeaderValues::romBytes]) const
+std::uint32_t Cartridge::Header::getFullRom(std::uint8_t rom[HeaderValues::romBytes]) const
 {
     std::uint32_t fullRom = 0;
 
@@ -110,9 +109,9 @@ void Cartridge::Header::verifyPrint()
 
 Cartridge::Header::RestrictedString::RestrictedString(std::size_t size, std::uint8_t bytes[]) : _size(size)
 {
-    _string.reserve(size);
+    _string.reserve(_size);
 
-    for (std::size_t i = 0; i < size; i++) {
+    for (std::size_t i = 0; i < _size; i++) {
         _string += static_cast<char>(bytes[i]);
     }
 }

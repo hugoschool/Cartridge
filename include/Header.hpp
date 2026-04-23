@@ -97,9 +97,9 @@ namespace Cartridge {
         private:
             HeaderContent _content;
 
-            const std::uint32_t getFullRom(std::uint8_t rom[HeaderValues::romBytes]) const;
-            const std::uint8_t calculateComplementCheck() const;
-            const std::uint32_t littleToBigEndian(std::uint32_t) const;
+            std::uint32_t getFullRom(std::uint8_t rom[HeaderValues::romBytes]) const;
+            std::uint8_t calculateComplementCheck() const;
+            std::uint32_t littleToBigEndian(std::uint32_t) const;
 
             bool verifyNintendoLogo(std::uint8_t nintendo[HeaderValues::nintendoBytes]) const;
             bool verifyEmptyArea(std::uint8_t *reserved, std::size_t size) const;
