@@ -1,6 +1,10 @@
 CXX	:=	clang++
-CFLAGS	:=	-Wall -Wextra -std=c++20
+CXXFLAGS	:=	-Wall -Wextra -std=c++20
 CPPFLAGS	:=	-I include -I third_party
+
+ifeq ($(ENV), dev)
+	CXXFLAGS	+=	-g3
+endif
 
 SRC	:=	src/main.cpp \
 		src/Header.cpp
