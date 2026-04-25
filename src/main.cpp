@@ -7,10 +7,10 @@ int main(int argc, char **argv)
 
     try {
         arguments.parse(argc, argv);
+
+        return !(arguments.execute() == true);
     } catch (const std::exception& err) {
         std::cerr << err.what() << std::endl;
         return 1;
     }
-
-    return !(arguments.execute() == true);
 }
