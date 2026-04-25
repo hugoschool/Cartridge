@@ -4,6 +4,8 @@ cartridge
 *.o
 *.gb
 *.gba
+*.bin
+*.elf
 
 # Clangd
 .cache
