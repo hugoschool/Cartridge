@@ -79,7 +79,7 @@ namespace Cartridge {
             ~Header() = default;
 
             void readFromFile(std::string fileName);
-            void verifyPrint();
+            bool verify(bool print);
 
             class RestrictedString {
                 public:

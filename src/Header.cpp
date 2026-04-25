@@ -80,31 +80,51 @@ bool Cartridge::Header::verifyEmptyArea(std::uint8_t *reserved, std::size_t size
     return verified;
 }
 
-void Cartridge::Header::verifyPrint()
+bool Cartridge::Header::verify(bool print)
 {
+    if (print == false)
+        std::cout.rdbuf(std::ifstream("/dev/null").rdbuf());
+
     std::cout << "ROM: 0x" << std::hex << getFullRom(_content.rom) << std::endl;
 
-    std::cout << "Nintendo Logo: " << std::boolalpha << verifyNintendoLogo(_content.nintendo) << std::endl;
+    const bool nintendoLogo = verifyNintendoLogo(_content.nintendo);
+    std::cout << "Nintendo Logo: " << std::boolalpha << nintendoLogo << std::endl;
+    if (!nintendoLogo)
+        return false;
 
     std::cout << "Game title: " << RestrictedString(HeaderValues::gameTitleBytes, _content.gameTitle).getString() << std::endl;
     std::cout << "Game code: " << RestrictedString(HeaderValues::gameCodeBytes, _content.gameCode).getString() << std::endl;
     std::cout << "Maker code: " << RestrictedString(HeaderValues::makerCodeBytes, _content.makerCode).getString() << std::endl;
 
-    std::cout << "Fixed value: " << std::boolalpha << (_content.fixed == HeaderValues::fixedValue) << std::endl;
+    const bool fixedValue = _content.fixed == HeaderValues::fixedValue;
+    std::cout << "Fixed value: " << std::boolalpha << fixedValue << std::endl;
     std::cout << "Main unit code: " << "0x" << std::setfill('0') << std::setw(2) << std::hex << static_cast<int>(_content.mainUnitCode) << std::endl;
     std::cout << "Device type: " << "0x" << std::setfill('0') << std::setw(2) << std::hex << static_cast<int>(_content.deviceType) << std::endl;
 
-    std::cout << "Reserved 1: " << std::boolalpha << verifyEmptyArea(_content.reserved_1, HeaderValues::reserved_1_bytes) << std::endl;
+    if (!fixedValue)
+        return false;
+
+    const bool empty1 = verifyEmptyArea(_content.reserved_1, HeaderValues::reserved_1_bytes);
+    std::cout << "Reserved 1: " << std::boolalpha << empty1 << std::endl;
+
+    if (!empty1)
+        return false;
+
     std::cout << "Software version number: " << "0x" << std::setfill('0') << std::setw(2) << std::hex << static_cast<int>(_content.softwareVersion) << std::endl;
 
-    const std::uint8_t complementCheck = calculateComplementCheck();
+    const std::uint8_t ownComplementCheck = calculateComplementCheck();
+    const bool complementCheck = _content.complementCheck == ownComplementCheck;
 
-    std::cout << "Complement check: " << std::boolalpha << (_content.complementCheck == complementCheck) << std::endl;
+    std::cout << "Complement check: " << std::boolalpha << complementCheck << std::endl;
     std::cout << std::setfill(' ') << std::setw(8) << " " << "Given: " << "0x" << std::hex << static_cast<int>(_content.complementCheck) << std::endl;
-    std::cout << std::setfill(' ') << std::setw(8) << " " << "Calculated: " << "0x" << std::hex << static_cast<int>(complementCheck) << std::endl;
+    std::cout << std::setfill(' ') << std::setw(8) << " " << "Calculated: " << "0x" << std::hex << static_cast<int>(ownComplementCheck) << std::endl;
 
-    std::cout << "Reserved 2: " << std::boolalpha
-        << verifyEmptyArea(_content.reserved_2, HeaderValues::reserved_2_bytes) << std::endl;
+    if (!complementCheck)
+        return false;
+
+    const bool empty2 = verifyEmptyArea(_content.reserved_2, HeaderValues::reserved_2_bytes);
+    std::cout << "Reserved 2: " << std::boolalpha << empty1 << std::endl;
+    return empty2;
 }
 
 Cartridge::Header::RestrictedString::RestrictedString(std::size_t size, std::uint8_t bytes[]) : _size(size)

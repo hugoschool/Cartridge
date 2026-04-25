@@ -18,9 +18,8 @@ bool Cartridge::HeaderArgument::execute()
         header.readFromFile(gba);
 
         std::cout << gba << std::endl;
-        header.verifyPrint();
 
-        return true;
+        return header.verify(true);
     }
     return false;
 }
