@@ -3,9 +3,15 @@
 
 Cartridge::HeaderArgument::HeaderArgument() :
     _parser("header", "0", argparse::default_arguments::help),
-    _checkSubcommand("check", "0", argparse::default_arguments::none)
+    _checkSubcommand("check", "0", argparse::default_arguments::help),
+    _generateSubcommand("generate", "0", argparse::default_arguments::help)
 {
-    _checkSubcommand.add_argument("gba").help("GBA file to parse header");
+    _generateSubcommand.add_argument("-b", "--binary").required().help("input binary file");
+    _generateSubcommand.add_argument("-o", "--output").required().help("output binary file");
+    _generateSubcommand.add_argument("-n", "--name").help("Game name").default_value("NO NAME");
+    _parser.add_subparser(_generateSubcommand);
+
+    _checkSubcommand.add_argument("gba").required().help("GBA file to parse header");
     _parser.add_subparser(_checkSubcommand);
 }
 
@@ -20,6 +26,15 @@ bool Cartridge::HeaderArgument::execute()
         std::cout << gba << std::endl;
 
         return header.verify(true);
+    }
+    if (_parser.is_subcommand_used("generate")) {
+        std::string inputFile = _generateSubcommand.get<std::string>("-b");
+        std::string outputFile = _generateSubcommand.get<std::string>("-o");
+        std::string gameName = _generateSubcommand.get<std::string>("-n");
+
+        Header::generate(inputFile, outputFile, gameName);
+
+        return true;
     }
     return false;
 }

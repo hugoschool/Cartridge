@@ -13,6 +13,8 @@ namespace Cartridge {
         constexpr std::size_t reserved_1_bytes = 7;
         constexpr std::size_t reserved_2_bytes = 2;
 
+        constexpr std::size_t fullSize = 192;
+
         constexpr std::uint8_t fixedValue = 0x96;
         constexpr std::uint8_t nintendoHeader[nintendoBytes] = {
             0x24, 0xff, 0xae, 0x51, 0x69, 0x9a, 0xa2, 0x21, 0x3d, 0x84,
@@ -78,7 +80,8 @@ namespace Cartridge {
             Header() = default;
             ~Header() = default;
 
-            void readFromFile(std::string fileName);
+            void readFromFile(const std::string fileName);
+            static void generate(const std::string input, const std::string output, const std::string gameName);
             bool verify(bool print);
 
             class RestrictedString {
@@ -98,7 +101,7 @@ namespace Cartridge {
             HeaderContent _content;
 
             std::uint32_t getFullRom(std::uint8_t rom[HeaderValues::romBytes]) const;
-            std::uint8_t calculateComplementCheck() const;
+            static std::uint8_t calculateComplementCheck(HeaderContent content);
             std::uint32_t littleToBigEndian(std::uint32_t) const;
 
             bool verifyNintendoLogo(std::uint8_t nintendo[HeaderValues::nintendoBytes]) const;

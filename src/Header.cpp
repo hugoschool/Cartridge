@@ -1,11 +1,13 @@
 #include "Header.hpp"
+#include <cstdint>
+#include <cstring>
 #include <fstream>
 #include <iomanip>
 #include <ios>
 #include <iostream>
 #include <ostream>
 
-void Cartridge::Header::readFromFile(std::string fileName)
+void Cartridge::Header::readFromFile(const std::string fileName)
 {
     std::ifstream fs(fileName, std::ios_base::binary);
 
@@ -16,12 +18,53 @@ void Cartridge::Header::readFromFile(std::string fileName)
     fs.read((char *)&_content, sizeof(Cartridge::HeaderContent));
 }
 
-std::uint8_t Cartridge::Header::calculateComplementCheck() const
+void Cartridge::Header::generate(const std::string input, const std::string output, const std::string gameName)
+{
+    std::ifstream inputFs(input, std::ios_base::binary);
+    std::ofstream outputFs(output, std::ios_base::binary);
+
+    HeaderContent header {
+        // Hard coded for now
+        .rom = {0x08, 0x00, 0x00, 0xc0},
+        .nintendo = {0},
+        .gameTitle = "",
+        .gameCode = {0},
+        .makerCode = {'0', '1'},
+        .fixed = HeaderValues::fixedValue,
+        .mainUnitCode = 0x00,
+        .deviceType = 0x00,
+        .reserved_1 = {0},
+        .softwareVersion = 0x00,
+        .complementCheck = 0,
+        .reserved_2 = {0},
+    };
+
+    std::strncpy(reinterpret_cast<char *>(header.gameTitle), gameName.c_str(), HeaderValues::gameTitleBytes);
+
+    std::string gameCode;
+    for (char c : gameName) {
+        if (c == ' ')
+            continue;
+        gameCode += c;
+    }
+
+    std::strncpy(reinterpret_cast<char *>(header.gameCode), gameCode.c_str(), HeaderValues::gameCodeBytes);
+    std::memcpy(header.nintendo, HeaderValues::nintendoHeader, HeaderValues::nintendoBytes);
+    header.complementCheck = calculateComplementCheck(header);
+
+    for (std::size_t i = 0; i < HeaderValues::fullSize; i++) {
+        outputFs << header.rom[i];
+    }
+
+    outputFs << inputFs.rdbuf();
+}
+
+std::uint8_t Cartridge::Header::calculateComplementCheck(Cartridge::HeaderContent content)
 {
     std::uint8_t complementCheck = 0;
 
     for (std::uint8_t i = 0xA0; i <= 0xBC; i++) {
-        const std::uint8_t *byte = &_content.rom[i];
+        const std::uint8_t *byte = &content.rom[i];
         complementCheck -= *byte;
     }
     complementCheck -= 0x19;
@@ -112,7 +155,7 @@ bool Cartridge::Header::verify(bool print)
 
     std::cout << "Software version number: " << "0x" << std::setfill('0') << std::setw(2) << std::hex << static_cast<int>(_content.softwareVersion) << std::endl;
 
-    const std::uint8_t ownComplementCheck = calculateComplementCheck();
+    const std::uint8_t ownComplementCheck = calculateComplementCheck(_content);
     const bool complementCheck = _content.complementCheck == ownComplementCheck;
 
     std::cout << "Complement check: " << std::boolalpha << complementCheck << std::endl;

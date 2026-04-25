@@ -11,7 +11,7 @@ redscreen.bin:	redscreen.elf
 	$(OBJCOPY) -O binary $^ $@
 
 redscreen.gba:	redscreen.bin
-	$(CARTRIDGE) header gen -o $@ -b $^
+	$(CARTRIDGE) header generate -o $@ -b $^
 
 clean:
 	$(RM) redscreen.bin
