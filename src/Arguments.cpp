@@ -4,8 +4,12 @@
 Cartridge::HeaderArgument::HeaderArgument() :
     _parser("header", "0", argparse::default_arguments::help),
     _checkSubcommand("check", "0", argparse::default_arguments::help),
-    _generateSubcommand("generate", "0", argparse::default_arguments::help)
+    _generateSubcommand("generate", "0", argparse::default_arguments::help),
+    _dumpSubcommand("dump", "0", argparse::default_arguments::help)
 {
+    _dumpSubcommand.add_argument("file").required().help("File to dump");
+    _parser.add_subparser(_dumpSubcommand);
+
     _generateSubcommand.add_argument("-b", "--binary").required().help("input binary file");
     _generateSubcommand.add_argument("-o", "--output").required().help("output binary file");
     _generateSubcommand.add_argument("-n", "--name").help("Game name").default_value("NO NAME");
@@ -33,6 +37,15 @@ bool Cartridge::HeaderArgument::execute()
         std::string gameName = _generateSubcommand.get<std::string>("-n");
 
         Header::generate(inputFile, outputFile, gameName);
+
+        return true;
+    }
+    if (_parser.is_subcommand_used("dump")) {
+        std::string file = _dumpSubcommand.get<std::string>("file");
+
+        Header header;
+        header.readFromFile(file);
+        header.dump();
 
         return true;
     }

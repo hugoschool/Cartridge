@@ -81,6 +81,7 @@ namespace Cartridge {
             ~Header() = default;
 
             void readFromFile(const std::string fileName);
+            void dump();
             static void generate(const std::string input, const std::string output, const std::string gameName);
             bool verify(bool print);
 

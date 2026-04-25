@@ -59,6 +59,17 @@ void Cartridge::Header::generate(const std::string input, const std::string outp
     outputFs << inputFs.rdbuf();
 }
 
+void Cartridge::Header::dump()
+{
+    for (std::size_t i = 0; i < HeaderValues::fullSize; i++) {
+        std::cout << "0x" << std::setfill('0') << std::setw(2) << std::hex << static_cast<int>(_content.rom[i]);
+        if (i % 10 == 9 || i == HeaderValues::fullSize - 1)
+            std::cout << std::endl;
+        else
+            std::cout << " ";
+    }
+}
+
 std::uint8_t Cartridge::Header::calculateComplementCheck(Cartridge::HeaderContent content)
 {
     std::uint8_t complementCheck = 0;

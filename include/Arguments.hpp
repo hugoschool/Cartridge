@@ -20,6 +20,7 @@ namespace Cartridge {
             argparse::ArgumentParser _parser;
             argparse::ArgumentParser _checkSubcommand;
             argparse::ArgumentParser _generateSubcommand;
+            argparse::ArgumentParser _dumpSubcommand;
     };
 
     class Arguments : public IArgument {
