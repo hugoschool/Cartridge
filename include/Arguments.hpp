@@ -23,6 +23,16 @@ namespace Cartridge {
             argparse::ArgumentParser _dumpSubcommand;
     };
 
+    class BuildArguments : public IArgument {
+        public:
+            BuildArguments();
+            ~BuildArguments();
+
+            bool execute() override;
+
+            argparse::ArgumentParser _parser;
+    };
+
     class Arguments : public IArgument {
         public:
             Arguments();
@@ -36,5 +46,6 @@ namespace Cartridge {
 
             // Could be simplified, map of command and IArgument
             Cartridge::HeaderArgument _headerArgument;
+            Cartridge::BuildArguments _buildArguments;
     };
 }

@@ -8,7 +8,8 @@ endif
 
 SRC	:=	src/main.cpp \
 		src/Header.cpp \
-		src/Arguments.cpp
+		src/Arguments.cpp \
+		src/Build.cpp
 
 OBJ	:=	$(SRC:.cpp=.o)
 

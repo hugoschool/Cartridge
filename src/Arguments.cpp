@@ -1,5 +1,10 @@
 #include "Arguments.hpp"
+#include "Build.hpp"
 #include "Header.hpp"
+#include "argparse.hpp"
+#include <exception>
+#include <iostream>
+#include <ostream>
 
 Cartridge::HeaderArgument::HeaderArgument() :
     _parser("header", "0", argparse::default_arguments::help),
@@ -52,11 +57,38 @@ bool Cartridge::HeaderArgument::execute()
     return false;
 }
 
+Cartridge::BuildArguments::BuildArguments() : _parser("build", "0")
+{
+    _parser.add_argument("path");
+}
+
+Cartridge::BuildArguments::~BuildArguments()
+{
+}
+
+bool Cartridge::BuildArguments::execute()
+{
+    try {
+        std::string file = _parser.get("path");
+        Build build(file);
+        build.build();
+        return true;
+    } catch (std::exception &e) {
+        std::cout << "TEST" << std::endl;
+        Build build("example/red-screen");
+        build.build();
+        return true;
+    }
+    return false;
+}
+
 Cartridge::Arguments::Arguments() :
     _globalParser("cartridge"),
-    _headerArgument()
+    _headerArgument(),
+    _buildArguments()
 {
     _globalParser.add_subparser(_headerArgument._parser);
+    _globalParser.add_subparser(_buildArguments._parser);
 }
 
 void Cartridge::Arguments::parse(int &argc, char **argv)
@@ -72,6 +104,8 @@ bool Cartridge::Arguments::execute()
 {
     if (_globalParser.is_subcommand_used("header")) {
         return _headerArgument.execute();
+    } else if (_globalParser.is_subcommand_used("build")) {
+        return _buildArguments.execute();
     }
     return false;
 }
