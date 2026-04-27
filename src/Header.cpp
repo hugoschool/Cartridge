@@ -25,7 +25,7 @@ void Cartridge::Header::generate(const std::string input, const std::string outp
 
     HeaderContent header {
         // Hard coded for now
-        .rom = {0x08, 0x00, 0x00, 0xc0},
+        .rom = {0x2e, 0x00, 0x00, 0xea},
         .nintendo = {0},
         .gameTitle = "",
         .gameCode = {0},
