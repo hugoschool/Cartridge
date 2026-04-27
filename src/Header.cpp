@@ -24,7 +24,16 @@ void Cartridge::Header::generate(const std::string input, const std::string outp
     std::ofstream outputFs(output, std::ios_base::binary);
 
     HeaderContent header {
-        // Hard coded for now
+        // The ROM is a branch instruction: see page 14 of the ARM7TDMI instructions
+        //
+        // ROM is encoded as big to little endian
+        // So it's encoded as 0xea00002e
+        //
+        // 0xea = 1110 1010
+        // 1110 = Condition code always
+        // 1010 = Regular branch instruction
+        //
+        // (0x2e << 2) + 8 (PC) = 0xc0 which is the first instruction available after the header
         .rom = {0x2e, 0x00, 0x00, 0xea},
         .nintendo = {0},
         .gameTitle = "",
