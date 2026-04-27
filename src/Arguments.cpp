@@ -57,9 +57,9 @@ bool Cartridge::HeaderArgument::execute()
     return false;
 }
 
-Cartridge::BuildArguments::BuildArguments() : _parser("build", "0")
+Cartridge::BuildArguments::BuildArguments() : _parser("build", "0", argparse::default_arguments::none)
 {
-    _parser.add_argument("path");
+    _parser.add_argument("path").default_value("example/red-screen");
 }
 
 Cartridge::BuildArguments::~BuildArguments()
@@ -74,10 +74,7 @@ bool Cartridge::BuildArguments::execute()
         build.build();
         return true;
     } catch (std::exception &e) {
-        std::cout << "TEST" << std::endl;
-        Build build("example/red-screen");
-        build.build();
-        return true;
+        return false;
     }
     return false;
 }
