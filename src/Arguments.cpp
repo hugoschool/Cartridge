@@ -7,7 +7,7 @@
 #include <ostream>
 
 Cartridge::HeaderArgument::HeaderArgument() :
-    _parser("header", "0", argparse::default_arguments::help),
+    AArgument("header", argparse::default_arguments::help),
     _checkSubcommand("check", "0", argparse::default_arguments::help),
     _generateSubcommand("generate", "0", argparse::default_arguments::help),
     _dumpSubcommand("dump", "0", argparse::default_arguments::help)
@@ -57,16 +57,16 @@ bool Cartridge::HeaderArgument::execute()
     return false;
 }
 
-Cartridge::BuildArguments::BuildArguments() : _parser("build", "0", argparse::default_arguments::none)
+Cartridge::BuildArgument::BuildArgument() : AArgument("build")
 {
-    _parser.add_argument("path").default_value("example/red-screen");
+    _parser.add_argument("path").default_value(".");
 }
 
-Cartridge::BuildArguments::~BuildArguments()
+Cartridge::BuildArgument::~BuildArgument()
 {
 }
 
-bool Cartridge::BuildArguments::execute()
+bool Cartridge::BuildArgument::execute()
 {
     try {
         std::string file = _parser.get("path");
@@ -79,30 +79,40 @@ bool Cartridge::BuildArguments::execute()
     return false;
 }
 
-Cartridge::Arguments::Arguments() :
-    _globalParser("cartridge"),
-    _headerArgument(),
-    _buildArguments()
+Cartridge::AArgument::AArgument(const std::string name, argparse::default_arguments args) :
+    _parser(name, "0", args)
 {
-    _globalParser.add_subparser(_headerArgument._parser);
-    _globalParser.add_subparser(_buildArguments._parser);
+}
+
+argparse::ArgumentParser &Cartridge::AArgument::getParser()
+{
+    return _parser;
+}
+
+Cartridge::Arguments::Arguments() :
+    AArgument("cartridge", argparse::default_arguments::help),
+    _headerArgument(),
+    _buildArgument()
+{
+    _parser.add_subparser(_headerArgument.getParser());
+    _parser.add_subparser(_buildArgument.getParser());
 }
 
 void Cartridge::Arguments::parse(int &argc, char **argv)
 {
     try {
-        _globalParser.parse_args(argc, argv);
+        _parser.parse_args(argc, argv);
     } catch (std::exception &e) {
-        std::cerr << _globalParser;
+        std::cerr << _parser;
     }
 }
 
 bool Cartridge::Arguments::execute()
 {
-    if (_globalParser.is_subcommand_used("header")) {
+    if (_parser.is_subcommand_used("header")) {
         return _headerArgument.execute();
-    } else if (_globalParser.is_subcommand_used("build")) {
-        return _buildArguments.execute();
+    } else if (_parser.is_subcommand_used("build")) {
+        return _buildArgument.execute();
     }
     return false;
 }
