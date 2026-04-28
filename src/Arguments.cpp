@@ -3,8 +3,13 @@
 #include "Header.hpp"
 #include "argparse.hpp"
 #include <exception>
+#include <filesystem>
+#include <fstream>
 #include <iostream>
 #include <ostream>
+#include <unistd.h>
+#include <sys/types.h>
+#include <pwd.h>
 
 Cartridge::HeaderArgument::HeaderArgument() :
     AArgument("header", argparse::default_arguments::help),
@@ -62,10 +67,6 @@ Cartridge::BuildArgument::BuildArgument() : AArgument("build")
     _parser.add_argument("path").default_value(".");
 }
 
-Cartridge::BuildArgument::~BuildArgument()
-{
-}
-
 bool Cartridge::BuildArgument::execute()
 {
     try {
@@ -77,6 +78,65 @@ bool Cartridge::BuildArgument::execute()
         return false;
     }
     return false;
+}
+
+Cartridge::EmuArgument::EmuArgument() : AArgument("emu", argparse::default_arguments::help)
+{
+    _parser.add_argument("--path").default_value(getEmulatorConfigPath());
+    _parser.add_argument("--rom").required();
+}
+
+bool Cartridge::EmuArgument::execute()
+{
+    try {
+        std::string emulatorPath = _parser.get("--path");
+        std::string rom = _parser.get("--rom");
+        if (emulatorPath.empty()) {
+            std::cerr << "No valid emulator path" << std::endl;
+            return false;
+        }
+        const std::string systemCommand(emulatorPath + " --rom " + rom.c_str());
+        std::system(systemCommand.c_str());
+        return true;
+    } catch (std::exception &e) {
+        return false;
+    }
+    return false;
+}
+
+std::string Cartridge::EmuArgument::getEmulatorConfigPath() const
+{
+    const char *xdg_value = getenv("XDG_CONFIG_HOME");
+    const char *home = getpwuid(getuid())->pw_dir;
+    const std::string defaultPath = std::string(home) + "/.config";
+    std::string fullPath;
+
+    if (xdg_value == NULL) {
+        fullPath += defaultPath;
+    } else {
+        fullPath += xdg_value;
+    }
+    const std::filesystem::path currentPath = std::filesystem::current_path();
+
+    std::filesystem::current_path(fullPath);
+    fullPath += "/cartridge";
+    try {
+        std::filesystem::create_directory(fullPath);
+    } catch (const std::exception &e) {
+        std::cerr << "Impossible to create " << fullPath << std::endl;
+        std::filesystem::current_path(currentPath);
+        return std::string();
+    }
+    std::filesystem::current_path(currentPath);
+    fullPath += "/emulator_path";
+    if (std::filesystem::exists(fullPath)) {
+        std::ifstream stream(fullPath);
+        std::string content;
+
+        stream >> content;
+        return content;
+    }
+    return std::string();
 }
 
 Cartridge::AArgument::AArgument(const std::string name, argparse::default_arguments args) :
@@ -92,10 +152,12 @@ argparse::ArgumentParser &Cartridge::AArgument::getParser()
 Cartridge::Arguments::Arguments() :
     AArgument("cartridge", argparse::default_arguments::help),
     _headerArgument(),
-    _buildArgument()
+    _buildArgument(),
+    _emuArgument()
 {
     _parser.add_subparser(_headerArgument.getParser());
     _parser.add_subparser(_buildArgument.getParser());
+    _parser.add_subparser(_emuArgument.getParser());
 }
 
 void Cartridge::Arguments::parse(int &argc, char **argv)
@@ -113,6 +175,9 @@ bool Cartridge::Arguments::execute()
         return _headerArgument.execute();
     } else if (_parser.is_subcommand_used("build")) {
         return _buildArgument.execute();
+    } else if (_parser.is_subcommand_used("emu")) {
+        return _emuArgument.execute();
     }
+    std::cerr << "No subcommand found" << std::endl;
     return false;
 }
