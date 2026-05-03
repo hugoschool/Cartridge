@@ -10,6 +10,10 @@
 // - no stack setup, be careful
 
 _bootstrap:
+    // make sure the instruction set is ARM and not THUMB
+    // see `info as` but this effectively does the same as `.code 32`
+    .arm
+
     // screen configuration
     // @note
     // - select the video mode 3 which is configure a basic VRAM
