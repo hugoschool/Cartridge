@@ -8,12 +8,17 @@ ENTRY(_bootstrap)
 * - skip the cartridge header
 * - other memory area will be cover soon .. */
 MEMORY {
-    rom (rx) : ORIGIN = 0x080000c0, LENGTH = 32M
+    game_pack (rx) : ORIGIN = 0x080000c0, LENGTH = 32M
 }
 
-/* aggressively keep code binary and force it to be located at the start of the ROM */
 SECTIONS {
     .text : {
+        /* Force _bootstrap to be loaded first */
+        /* For more info, see `info ld` section 3.5.1 */
+        /* Can verify the order of symbols / sections with `arm-none-eabi-objdump -D <filename>.elf` */
+        _bootstrap = .;
+
+        /* Rest of the code binary */
         KEEP(*(.text));
-    } > rom
+    } > game_pack
 }
