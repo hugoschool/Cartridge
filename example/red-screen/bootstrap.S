@@ -14,6 +14,16 @@ _bootstrap:
     // see `info as` but this effectively does the same as `.code 32`
     .arm
 
+    // disable hardware interrupts
+    // a good explanation of the CPSR register can be found here [1]
+    // MRS and MSR instructions allow us to manipulate the CPSR register
+    //
+    // [1]: https://developer.arm.com/documentation/den0042/0100/ARM-Processor-modes-and-Registers/Registers/Program-Status-Registers
+    mrs r0, cpsr
+	orr r0, r0, #0x40 // Disabling FIQ
+	orr r0, r0, #0xc0 // Disabling IRQ
+	msr cpsr, r0
+
     // screen configuration
     // @note
     // - select the video mode 3 which is configure a basic VRAM
