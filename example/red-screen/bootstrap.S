@@ -59,10 +59,8 @@ color_loop:
     cmp r1, #0
     bne color_loop
 
-    // Waiting loop of death
-death_loop:
-    b death_loop
-    nop
+// Calling into our own C main function
+    b main
 
 // ---
 // Data area

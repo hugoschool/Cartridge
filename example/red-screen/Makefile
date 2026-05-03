@@ -4,8 +4,11 @@ CARTRIDGE	:=	../../cartridge
 
 default:	redscreen.gba
 
-redscreen.elf:	bootstrap.S
+redscreen.elf:	bootstrap.S main.o
 	$(CC) -mcpu=arm7tdmi -mlittle-endian -nostdlib -T gba.ld -o $@ $^
+
+main.o:	main.c
+	$(CC) -mcpu=arm7tdmi -o $@ -c $^
 
 redscreen.bin:	redscreen.elf
 	$(OBJCOPY) -O binary $^ $@
