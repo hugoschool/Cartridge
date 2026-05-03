@@ -24,6 +24,9 @@ _bootstrap:
 	orr r0, r0, #0xc0 // Disabling IRQ
 	msr cpsr, r0
 
+    // set the stack pointer to the user system mode
+    ldr sp, =stack_pointer_user
+
     // screen configuration
     // @note
     // - select the video mode 3 which is configure a basic VRAM
@@ -65,6 +68,8 @@ death_loop:
 // Data area
 // ---
 .balign 4
+stack_pointer_user:
+    .long 0x03007F00
 vram_addr:
     .long 0x06000000
 reg_dispcnt_addr:
