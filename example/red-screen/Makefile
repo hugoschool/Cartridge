@@ -6,7 +6,7 @@ CPU	:=	arm7tdmi
 default:	redscreen.gba
 
 redscreen.elf:	bootstrap.S main.o
-	$(CC) -mcpu=$(CPU) -mlittle-endian -nostdlib -T gba.ld -o $@ $^
+	$(CC) -Wl,-Map=redscreen.map -mcpu=$(CPU) -mlittle-endian -nostdlib -T gba.ld -o $@ $^
 
 main.o:	main.c
 	$(CC) -mcpu=$(CPU) -o $@ -c $^

@@ -25,7 +25,12 @@ _bootstrap:
 	msr cpsr, r0
 
     // set the stack pointer to the user system mode
-    ldr sp, =stack_pointer_user
+    ldr r0, =stack_pointer_user
+    ldr sp, [r0]
+
+// pouet:
+//     b pouet
+//     nop
 
     // screen configuration
     // @note
@@ -34,12 +39,12 @@ _bootstrap:
     // @out
     // - r3 -> new display register configuration
     // - r4 -> old display register configuration
-    ldr r0, =reg_dispcnt_addr
-    ldr r0, [r0]
-    ldr r4, [r0]
-    ldr r2, =reg_dispcnt_config
-    ldr r2, [r2]
-    strh r2, [r0]
+    ldr r0, =reg_dispcnt_addr   //! recup addr du label reg_dispcnt_addr
+    ldr r0, [r0]                //! r0 = *r0 -> 0x04000000
+    ldr r4, [r0]                //! r4 = *r0 -> *0x0400000 -> r4 = DISPCNT
+    ldr r2, =reg_dispcnt_config //! r2 = addr du label
+    ldr r2, [r2]                //! r2 = config
+    strh r2, [r0]               //! *r0 = r2
     ldr r3, [r0]
 
     // VRAM color fill
@@ -47,17 +52,17 @@ _bootstrap:
     // - very, very, very slow VRAM update
     // - color the whole VRAM in RED
     // - screen size (w=240, h=160)
-    ldr r0, =vram_addr
-    ldr r0, [r0]
-    mov r2, #31
-    mov r1, #(240*160)
+//     ldr r0, =vram_addr
+//     ldr r0, [r0]
+//     mov r2, #31
+//     mov r1, #(240*160)
 
-color_loop:
-    strh r2, [r0]
-    sub r1, #1
-    add r0, #2
-    cmp r1, #0
-    bne color_loop
+// color_loop:
+//     strh r2, [r0]
+//     sub r1, #1
+//     add r0, #2
+//     cmp r1, #0
+//     bne color_loop
 
 // Calling into our own C main function
     b main
