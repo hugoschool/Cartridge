@@ -5,13 +5,25 @@ extern void dinit(void);
 extern void dclear(uint16_t color);
 extern void dpixel(int16_t x, int16_t y, uint16_t color);
 
+typedef enum color_s {
+    TFT_BLACK= 0x000,
+    TFT_BLUE = 0xF800,
+    TFT_RED = 0x001F,
+    TFT_GREEN = 0x07E0,
+    TFT_SKYBLUE = 0xFFE0,
+    TFT_WHITE = 0xFFFF,
+    TFT_PURPLE = 0x780F,
+    TFT_CYAN = 0xFDA0,
+    TFT_GOLD = 0x867D,
+}color_t;
+
 void main(void)
 {
     dinit();
-    dclear(31);
+    dclear(TFT_WHITE);
     for (uint16_t i = 120; i < 130; i++) {
         for (uint16_t j = 80; j < 90; j++) {
-            dpixel(i, j, 0x780F);
+            dpixel(i, j, TFT_GOLD);
         }
     }
     while (1);
