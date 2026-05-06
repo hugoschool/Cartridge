@@ -39,13 +39,13 @@ _bootstrap:
     // @out
     // - r3 -> new display register configuration
     // - r4 -> old display register configuration
-    ldr r0, =reg_dispcnt_addr   //! recup addr du label reg_dispcnt_addr
-    ldr r0, [r0]                //! r0 = *r0 -> 0x04000000
-    ldr r4, [r0]                //! r4 = *r0 -> *0x0400000 -> r4 = DISPCNT
-    ldr r2, =reg_dispcnt_config //! r2 = addr du label
-    ldr r2, [r2]                //! r2 = config
-    strh r2, [r0]               //! *r0 = r2
-    ldr r3, [r0]
+    // ldr r0, =reg_dispcnt_addr   //! recup addr du label reg_dispcnt_addr
+    // ldr r0, [r0]                //! r0 = *r0 -> 0x04000000
+    // ldr r4, [r0]                //! r4 = *r0 -> *0x0400000 -> r4 = DISPCNT
+    // ldr r2, =reg_dispcnt_config //! r2 = addr du label
+    // ldr r2, [r2]                //! r2 = config
+    // strh r2, [r0]               //! *r0 = r2
+    // ldr r3, [r0]
 
     // VRAM color fill
     // @note

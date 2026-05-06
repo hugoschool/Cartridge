@@ -7,12 +7,17 @@ extern void dpixel(int16_t x, int16_t y, uint16_t color);
 
 void main(void)
 {
-    // dinit();
-    // dpixel(240, 160, 31);
+    dinit();
     dclear(31);
+    for (uint16_t i = 120; i < 130; i++) {
+        for (uint16_t j = 80; j < 90; j++) {
+            dpixel(i, j, 0x780F);
+        }
+    }
     while (1);
 }
 
+//useless for now
 struct DISPCNT {
     union {
         uint16_t WORD;
@@ -27,13 +32,8 @@ struct DISPCNT {
 
 void dinit(void)
 {
-    uint8_t volatile *ime = (uint8_t *)0x4000208;
-    (*ime) = 0;
-
-    struct DISPCNT volatile *DISPCNT = (struct DISPCNT *)0x0400000;
-    DISPCNT->WORD = 0x0403;
-    // DISPCNT->MODE = 0b011;
-    // DISPCNT->BG_MODE = 0;
+    uint16_t volatile *DISPCNT = (uint16_t *)0x04000000;
+    *DISPCNT = 0x0403;
 }
 
 void dclear(uint16_t color)
@@ -47,8 +47,9 @@ void dclear(uint16_t color)
 void dpixel(int16_t x, int16_t y, uint16_t color)
 {
     uint16_t volatile *VRAM = (uint16_t *)0x06000000;
-    uint16_t size = x * y;
-    VRAM[size] = color;
+    uint16_t size = 240 * y;
+    size += x;
+    VRAM[size - 1] = color;
 }
 
 //test
