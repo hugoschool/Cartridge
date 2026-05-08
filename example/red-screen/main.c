@@ -5,17 +5,18 @@ extern void dinit(void);
 extern void dclear(uint16_t color);
 extern void dpixel(int16_t x, int16_t y, uint16_t color);
 
-typedef enum color_s {
-    TFT_BLACK= 0x000,
-    TFT_BLUE = 0xF800,
-    TFT_RED = 0x001F,
-    TFT_GREEN = 0x07E0,
-    TFT_SKYBLUE = 0xFFE0,
-    TFT_WHITE = 0xFFFF,
-    TFT_PURPLE = 0x780F,
-    TFT_CYAN = 0xFDA0,
-    TFT_GOLD = 0x867D,
-}color_t;
+#define COLOR(r, g, b) 0x0000 | b << 11 | g << 5 | r << 1
+
+typedef enum {
+    TFT_BLACK = COLOR(0, 0, 0),
+    TFT_BLUE = COLOR(0, 0, 31),
+    TFT_RED = COLOR(31, 0, 0),
+    TFT_GREEN = COLOR(0, 31, 0),
+    TFT_WHITE = COLOR(31, 31, 31),
+    TFT_PURPLE = COLOR(15, 0, 30),
+    TFT_CYAN = COLOR(16, 22, 31),
+    TFT_GOLD = COLOR(30, 25, 16),
+} color_full_t;
 
 void main(void)
 {
@@ -63,5 +64,3 @@ void dpixel(int16_t x, int16_t y, uint16_t color)
     size += x;
     VRAM[size - 1] = color;
 }
-
-//test
