@@ -30,37 +30,77 @@ void main(void)
     while (1);
 }
 
-//useless for now
-struct DISPCNT {
-    union {
-        uint16_t WORD;
-        struct {
-            uint16_t MODE      : 2;
-            uint16_t BG_MODE   : 1;
-            uint16_t DISP_SEL  : 1;
-            uint16_t SCRN_DIH  : 12; // todo
-        };
-    };
-};
+/* Packed structures. I require explicit alignment because if it's unspecified,
+   GCC cannot optimize access size, and reads to memory-mapped I/O with invalid
+   access sizes silently fail - honestly you don't want this to happen */
+#define MYPACKED(x)     __attribute__((packed, aligned(x)))
+
+/* Giving a type to padding bytes is misguiding, let's hide it in a macro */
+#define pad_nam2(c) _ ## c
+#define pad_name(c) pad_nam2(c)
+#define pad(bytes) uint8_t pad_name(__COUNTER__)[bytes]
+
+/* word_union() - union between an uint16_t 'word' element and a bit field */
+#define word_union(name, fields)    \
+    union {                           \
+        uint16_t word;                  \
+        struct { fields } MYPACKED(2);  \
+    } MYPACKED(2) name
+
+//---
+// GBA LCD peripheral. Refer to:
+// "GBATEK : LCD I/O Video Controller"
+//---
+typedef struct {
+    // I/O configuraton
+    word_union(DISPCNT,
+        uint16_t BG_MODE     :2; // Video Mode
+        uint16_t             :1; // reserved
+        uint16_t DFS         :1; // Display Frame Select
+        uint16_t HBIF        :1; // H-Blank Interval Free
+        uint16_t OCVM        :1; // OBJ Character VRAM Mapping
+        uint16_t FB          :1; // Force Blank
+        uint16_t BG0         :1; // Enable Screen Display Background 0
+        uint16_t BG1         :1; // Enable Screen Display Background 1
+        uint16_t BG2         :1; // Enable Screen Display Background 2
+        uint16_t BG3         :1; // Enable Screen Display Background 3
+        uint16_t OBJ         :1; // Enable Screen Display OBJ
+        uint16_t WDF0        :1; // Window Display Flag 0
+        uint16_t WDF1        :1; // Window Display Flag 1
+        uint16_t WDFOBJ      :1; // Window Display Flag OBJ
+    );
+    // TODO: only use what's interesting for now, rest later
+} MYPACKED(2) GBA_lcd_t;
+
+#define GBA_LCD (*(volatile GBA_lcd_t *)0x04000000)
+
+// Default configuration of DISPCNT
+#define DISPCNT_CONFIG 0x0403
+
+#define SCREEN_WIDTH 240
+#define SCREEN_HEIGHT 160
+
+#define VRAM_ADDR (uint16_t *)0x06000000
 
 void dinit(void)
 {
-    uint16_t volatile *DISPCNT = (uint16_t *)0x04000000;
-    *DISPCNT = 0x0403;
+    GBA_LCD.DISPCNT.word = DISPCNT_CONFIG;
 }
 
 void dclear(uint16_t color)
 {
-    uint16_t volatile *VRAM = (uint16_t *)0x06000000;
-    for (uint16_t i = 0; i < 240*160; i++) {
+    uint16_t volatile *VRAM = VRAM_ADDR;
+
+    for (uint16_t i = 0; i < SCREEN_WIDTH * SCREEN_HEIGHT; i++) {
         VRAM[i] = color;
     }
 }
 
 void dpixel(int16_t x, int16_t y, uint16_t color)
 {
-    uint16_t volatile *VRAM = (uint16_t *)0x06000000;
-    uint16_t size = 240 * y;
+    uint16_t volatile *VRAM = VRAM_ADDR;
+    uint16_t size = SCREEN_WIDTH * y;
+
     size += x;
     VRAM[size - 1] = color;
 }
