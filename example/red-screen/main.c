@@ -4,7 +4,7 @@
 int main(void)
 {
     dinit();
-    dclear(TFT_WHITE);
+    dclear(TFT_RED);
     for (uint16_t i = 120; i < 130; i++) {
         for (uint16_t j = 80; j < 90; j++) {
             dpixel(i, j, TFT_GOLD);
