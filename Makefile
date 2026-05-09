@@ -1,27 +1,27 @@
 CXX	:=	clang++
 CXXFLAGS	:=	-Wall -Wextra -std=c++20
-CPPFLAGS	:=	-I include -I third_party
+CPPFLAGS	:=	-I third_party
 
 ifeq ($(ENV), dev)
 	CXXFLAGS	+=	-g3
 endif
 
-SRC	:=	src/main.cpp \
-		src/Header.cpp \
-		src/Arguments.cpp \
-		src/Build.cpp
+SDK_SRC	:=	sdk/main.cpp \
+			sdk/Header.cpp \
+			sdk/Arguments.cpp \
+			sdk/Build.cpp
 
-OBJ	:=	$(SRC:.cpp=.o)
+SDK_OBJ	:=	$(SDK_SRC:.cpp=.o)
 
 BINARY	:=	cartridge
 
 all:	$(BINARY)
 
-$(BINARY):	$(OBJ)
-	$(CXX) -o $(BINARY) $(OBJ) $(LDFLAGS) $(LDLIBS)
+$(BINARY):	$(SDK_OBJ)
+	$(CXX) -o $(BINARY) $(SDK_OBJ) $(LDFLAGS) $(LDLIBS)
 
 clean:
-	$(RM) $(OBJ)
+	$(RM) $(SDK_OBJ)
 
 fclean:	clean
 	$(RM) $(BINARY)
