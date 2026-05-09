@@ -4,6 +4,7 @@ CARTRIDGE	:=	../../cartridge
 
 CPU	:=	arm7tdmi
 
+CFLAGS	:=	-Wall -Wextra
 CPPFLAGS	:=	-I ../../include
 LDFLAGS	:=	-L ../../drivers
 LDLIBS	:=	-l:screen/libscreen.a
@@ -14,7 +15,7 @@ redscreen.elf:	bootstrap.S main.o
 	$(CC) -mcpu=$(CPU) -mlittle-endian -nostdlib -T gba.ld -o $@ $^ $(LDFLAGS) $(LDLIBS)
 
 main.o:	main.c
-	$(CC) -mcpu=$(CPU) $(CPPFLAGS) -o $@ -c $^
+	$(CC) -mcpu=$(CPU) $(CFLAGS) $(CPPFLAGS) -o $@ -c $^
 
 redscreen.bin:	redscreen.elf
 	$(OBJCOPY) -O binary $^ $@

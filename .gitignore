@@ -6,6 +6,7 @@ cartridge
 *.gba
 *.bin
 *.elf
+saves
 
 # Clangd
 .cache

@@ -1,7 +1,7 @@
 #include "drivers/screen/screen.h"
 #include <stdint.h>
 
-void main(void)
+int main(void)
 {
     dinit();
     dclear(TFT_WHITE);
@@ -11,4 +11,5 @@ void main(void)
         }
     }
     while (1);
+    return 0;
 }
