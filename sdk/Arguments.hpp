@@ -52,6 +52,14 @@ namespace Cartridge {
             std::string getEmulatorConfigPath() const;
     };
 
+    class ConvArgument : public AArgument {
+        public:
+            ConvArgument();
+            ~ConvArgument() = default;
+
+            bool execute() override;
+    };
+
     class Arguments : public AArgument {
         public:
             Arguments();
@@ -64,5 +72,6 @@ namespace Cartridge {
             Cartridge::HeaderArgument _headerArgument;
             Cartridge::BuildArgument _buildArgument;
             Cartridge::EmuArgument _emuArgument;
+            Cartridge::ConvArgument _convArgument;
     };
 }

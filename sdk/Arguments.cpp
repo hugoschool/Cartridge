@@ -1,5 +1,6 @@
 #include "Arguments.hpp"
 #include "Build.hpp"
+#include "Convert.hpp"
 #include "Header.hpp"
 #include "argparse.hpp"
 #include <exception>
@@ -139,6 +140,53 @@ std::string Cartridge::EmuArgument::getEmulatorConfigPath() const
     return std::string();
 }
 
+Cartridge::ConvArgument::ConvArgument() : AArgument("conv", argparse::default_arguments::help)
+{
+    _parser.add_argument("-p", "--path").help("path to the font asset").required();
+    _parser.add_argument("-o", "--output").help("generated C file").required();
+    _parser.add_argument("-w", "--width").help("width size of char in pixel").required();
+    _parser.add_argument("-h", "--height").help("height size of char in pixel").required();
+    _parser.add_argument("-m", "--margin").help("margin between char in pixel").required();
+    _parser.add_argument("-l", "--line-height").help("virtual alignement line height in pixel").required();
+}
+
+bool Cartridge::ConvArgument::execute()
+{
+    try {
+        std::string assetPath = _parser.get("--path");
+        std::string assetFilename = std::filesystem::path(assetPath).filename().replace_extension("");
+
+        // Requires imagemagick
+        if (assetPath.ends_with(".xcf")) {
+            const std::string command("convert " + assetPath + " /tmp/" + assetFilename + ".png");
+            std::system(command.c_str());
+            // Get only the second layer, don't care about the rest
+            assetPath = "/tmp/" + assetFilename + "-2" + ".png";
+        }
+        if (assetPath.ends_with(".png")) {
+            const std::string command("convert " + assetPath + " /tmp/" + assetFilename + ".ppm");
+            std::system(command.c_str());
+            assetPath = "/tmp/" + assetFilename + ".ppm";
+        }
+
+        if (!assetPath.ends_with(".ppm"))
+            return false;
+
+        long width = std::stol(_parser.get("--width"));
+        long height = std::stol(_parser.get("--height"));
+        long margin = std::stol(_parser.get("--margin"));
+        long lineHeight = std::stol(_parser.get("--line-height"));
+
+        Convert convert(assetPath, width, height, margin, lineHeight);
+
+        convert.exportAsPPM();
+        return true;
+    } catch (std::exception &e) {
+        return false;
+    }
+    return true;
+}
+
 Cartridge::AArgument::AArgument(const std::string name, argparse::default_arguments args) :
     _parser(name, "0", args)
 {
@@ -153,11 +201,13 @@ Cartridge::Arguments::Arguments() :
     AArgument("cartridge", argparse::default_arguments::help),
     _headerArgument(),
     _buildArgument(),
-    _emuArgument()
+    _emuArgument(),
+    _convArgument()
 {
     _parser.add_subparser(_headerArgument.getParser());
     _parser.add_subparser(_buildArgument.getParser());
     _parser.add_subparser(_emuArgument.getParser());
+    _parser.add_subparser(_convArgument.getParser());
 }
 
 void Cartridge::Arguments::parse(int &argc, char **argv)
@@ -177,6 +227,8 @@ bool Cartridge::Arguments::execute()
         return _buildArgument.execute();
     } else if (_parser.is_subcommand_used("emu")) {
         return _emuArgument.execute();
+    } else if (_parser.is_subcommand_used("conv")) {
+        return _convArgument.execute();
     }
     std::cerr << "No subcommand found" << std::endl;
     return false;

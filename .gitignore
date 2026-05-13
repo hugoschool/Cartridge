@@ -8,6 +8,11 @@ cartridge
 *.elf
 saves
 
+# Assets
+*.ppm
+*.xcf
+!assets/*.xcf
+
 # Clangd
 .cache
 compile_commands.json

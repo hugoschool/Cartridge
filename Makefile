@@ -9,7 +9,8 @@ endif
 SDK_SRC	:=	sdk/main.cpp \
 			sdk/Header.cpp \
 			sdk/Arguments.cpp \
-			sdk/Build.cpp
+			sdk/Build.cpp \
+			sdk/Convert.cpp
 
 SDK_OBJ	:=	$(SDK_SRC:.cpp=.o)
 
