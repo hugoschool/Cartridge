@@ -21,6 +21,11 @@ _bootstrap:
     ldr sp, [r0]
 
     // Calling into our own C main function
+    // Passing CPSR as the first argument
+    mrs r0, cpsr
+    // Passing IME as the second argument
+    ldr r1, =ime_addr
+    ldr r1, [r1]
     b main
 
 // ---
@@ -33,5 +38,7 @@ vram_addr:
     .long 0x06000000
 reg_dispcnt_addr:
     .long 0x04000000
+ime_addr:
+    .long 0x04000208
 reg_dispcnt_config:
     .word 0x0403

@@ -4,7 +4,8 @@ CARTRIDGE	:=	../../cartridge
 
 CPU	:=	arm7tdmi
 
-CFLAGS	:=	-Wall -Wextra
+# Remove warnings about the main function, see bootstrap.S
+CFLAGS	:=	-Wall -Wextra -Wno-main
 CPPFLAGS	:=	-I ../../include
 LDFLAGS	:=	-L ../../drivers
 LDLIBS	:=	-l:screen/libscreen.a -l:fonts/8x12/libfont.a

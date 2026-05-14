@@ -1,7 +1,7 @@
 #include "drivers/screen/screen.h"
 #include <stdint.h>
 
-int main(void)
+int main(uint32_t CPSR, uint32_t IME)
 {
     dinit();
     dclear(TFT_RED);
