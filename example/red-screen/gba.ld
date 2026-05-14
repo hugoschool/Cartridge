@@ -21,4 +21,8 @@ SECTIONS {
         /* Rest of the code binary */
         KEEP(*(.text));
     } > game_pack
+
+    .rodata : {
+        KEEP(*(.rodata));
+    } > game_pack
 }
