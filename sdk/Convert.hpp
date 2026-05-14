@@ -17,6 +17,8 @@ namespace Cartridge {
             ~Convert() = default;
 
             void exportAsPPM();
+            void exportAsCMonospaced(std::string);
+
         private:
             const std::string _filePath;
             std::size_t _width;

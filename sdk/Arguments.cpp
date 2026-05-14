@@ -177,9 +177,11 @@ bool Cartridge::ConvArgument::execute()
         long margin = std::stol(_parser.get("--margin"));
         long lineHeight = std::stol(_parser.get("--line-height"));
 
+        std::string output = _parser.get("--output");
+
         Convert convert(assetPath, width, height, margin, lineHeight);
 
-        convert.exportAsPPM();
+        convert.exportAsCMonospaced(output);
         return true;
     } catch (std::exception &e) {
         return false;
