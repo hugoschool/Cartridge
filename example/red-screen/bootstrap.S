@@ -1,6 +1,11 @@
 .text
-.global _bootstrap
 
+.global cpu_get_stack
+cpu_get_stack:
+    ldr r0, =stack_pointer_user
+    ldr r0, [r0]
+
+.global _bootstrap
 _bootstrap:
     // make sure the instruction set is ARM and not THUMB
     // see `info as` but this effectively does the same as `.code 32`
