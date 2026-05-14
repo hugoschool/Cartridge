@@ -12,11 +12,14 @@ LDLIBS	:=	-l:screen/libscreen.a -l:fonts/8x12/libfont.a
 
 default:	redscreen.gba
 
-redscreen.elf:	bootstrap.S main.o
+redscreen.elf:	bootstrap.S main.o ../../utils/utils.o
 	$(CC) -mcpu=$(CPU) -mlittle-endian -nostdlib -T gba.ld -o $@ $^ $(LDFLAGS) $(LDLIBS)
 
 main.o:	main.c
 	$(CC) -mcpu=$(CPU) $(CFLAGS) $(CPPFLAGS) -o $@ -c $^ -L /usr/arm-none-eabi/lib -lc
+
+../../utils/utils.o:	../../utils/utils.c
+	$(CC) -mcpu=$(CPU) $(CFLAGS) $(CPPFLAGS) -o $@ -c $^
 
 redscreen.bin:	redscreen.elf
 	$(OBJCOPY) -O binary $^ $@

@@ -20,6 +20,13 @@
         struct { fields } MYPACKED(2);  \
     } MYPACKED(2) name
 
+extern uint32_t ROM_SIZE;
+extern uint32_t CODE_SIZE;
+extern uint32_t RODATA_SIZE;
+
 extern uint32_t cpu_get_stack();
+extern uint32_t rom_get_size();
+extern uint32_t code_get_size();
+extern uint32_t const_get_size();
 
 #endif

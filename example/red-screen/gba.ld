@@ -26,3 +26,9 @@ SECTIONS {
         KEEP(*(.rodata));
     } > game_pack
 }
+
+/* Very useful to determine this:
+* https://blog.thea.codes/the-most-thoroughly-commented-linker-script/ */
+ROM_SIZE = LENGTH(game_pack);
+CODE_SIZE = SIZEOF(.text);
+RODATA_SIZE = SIZEOF(.rodata);
