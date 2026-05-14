@@ -34,11 +34,5 @@ _bootstrap:
 .balign 4
 stack_pointer_user:
     .long 0x03007F00
-vram_addr:
-    .long 0x06000000
-reg_dispcnt_addr:
-    .long 0x04000000
 ime_addr:
     .long 0x04000208
-reg_dispcnt_config:
-    .word 0x0403
