@@ -7,7 +7,7 @@ CPU	:=	arm7tdmi
 CFLAGS	:=	-Wall -Wextra
 CPPFLAGS	:=	-I ../../include
 LDFLAGS	:=	-L ../../drivers
-LDLIBS	:=	-l:screen/libscreen.a
+LDLIBS	:=	-l:screen/libscreen.a -l:fonts/8x12/libfont.a
 
 default:	redscreen.gba
 

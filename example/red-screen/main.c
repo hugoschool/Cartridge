@@ -5,11 +5,9 @@ int main(void)
 {
     dinit();
     dclear(TFT_RED);
-    for (uint16_t i = 120; i < 130; i++) {
-        for (uint16_t j = 80; j < 90; j++) {
-            dpixel(i, j, TFT_GOLD);
-        }
-    }
+    dchar(120, 80, TFT_BLACK, TFT_WHITE, 'P');
+    dchar(128, 80, TFT_BLACK, TFT_WHITE, 'D');
+    dchar(136, 80, TFT_BLACK, TFT_WHITE, 'F');
     while (1);
     return 0;
 }
