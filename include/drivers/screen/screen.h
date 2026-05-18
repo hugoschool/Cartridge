@@ -6,6 +6,8 @@
 
 #define COLOR(r, g, b) 0x0000 | b << 11 | g << 5 | r << 1
 
+#define BUFFER_SIZE 256
+
 typedef enum {
     TFT_BLACK = COLOR(0, 0, 0),
     TFT_BLUE = COLOR(0, 0, 31),
