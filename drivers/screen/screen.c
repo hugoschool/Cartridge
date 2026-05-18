@@ -157,6 +157,9 @@ void dprint(int x, int y, int fg, const char *format, ...)
             updateBufferhex(nbr, buffer, &count);
             i++;
         } else if (format[i] == '%' && format[i + 1] == 'p') {
+            void *p = va_arg(args, void *);
+            updateBufferhex((uint32_t)p, buffer, &count);
+            i++;
         } else {
             buffer[count] = format[i];
             count++;
