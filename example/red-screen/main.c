@@ -5,8 +5,7 @@ int main(void)
 {
     dinit();
     dclear(TFT_RED);
-    dchar(120, 80, TFT_BLACK, 'P');
-    dchar(128, 80, TFT_BLACK, 'D');
+    dtext(120, 80, TFT_PURPLE, "Tu suce ?");
     while (1);
     return 0;
 }

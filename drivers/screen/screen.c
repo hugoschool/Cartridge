@@ -71,7 +71,13 @@ void dtext_opt(int32_t x, int32_t y, uint16_t fg, uint16_t bg, uint8_t halign, u
 }
 
 void dtext(int32_t x, int32_t y, uint16_t fg, const char *text)
-{}
+{
+    for (int32_t i = 0; text[i] != '\0'; i++) {
+        if (text[i] == '\n')
+            y += font.mono.glyph.height;
+        dchar(x + (i * font.mono.glyph.width), y, fg, text[i]);
+    }
+}
 
 void dprint_opt(int32_t x, int32_t y, uint16_t fg, uint16_t bg, uint8_t halign, uint8_t valign, const char *format, ...)
 {}
