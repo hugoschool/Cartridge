@@ -69,7 +69,8 @@ typedef struct {
 extern void dinit(void);
 extern void dclear(uint16_t color);
 extern void dpixel(int16_t x, int16_t y, uint16_t color);
-void dchar(int32_t x, int32_t y, uint16_t fg, uint16_t bg, uint8_t c);
+void dchar(int32_t x, int32_t y, uint16_t fg, uint8_t c);
+void dchar_opt(int32_t x, int32_t y, uint16_t fg, uint16_t bg, uint8_t c);
 
 /* dtext_opt () : Display a string of text
 This function is the core of the text rendering interface */

@@ -24,7 +24,7 @@ void dpixel(int16_t x, int16_t y, uint16_t color)
     VRAM[size] = color;
 }
 
-void dchar(int32_t x, int32_t y, uint16_t fg, uint16_t bg, uint8_t c)
+void dchar_opt(int32_t x, int32_t y, uint16_t fg, uint16_t bg, uint8_t c)
 {
     int32_t width = font.mono.glyph.width;
     int32_t height = font.mono.glyph.height;
@@ -41,6 +41,26 @@ void dchar(int32_t x, int32_t y, uint16_t fg, uint16_t bg, uint8_t c)
                 dpixel(x + j, y + i, fg);
             } else {
                 dpixel(x + j, y + i, bg);
+            }
+        }
+    }
+}
+
+void dchar(int32_t x, int32_t y, uint16_t fg, uint8_t c)
+{
+    int32_t width = font.mono.glyph.width;
+    int32_t height = font.mono.glyph.height;
+    int32_t posx = 0;
+    int32_t posy = height * c;
+    uint8_t bit = 0;
+    uint8_t mask = 0;
+
+    for (int32_t i = 0; i < height; i++) {
+        for (int32_t j = 0; j < width; j++) {
+            mask = 1 << (width - 1 - j);
+            bit = (font.mono.bitmap[posy + i] & mask) >> (width - 1 - j);
+            if (bit) {
+                dpixel(x + j, y + i, fg);
             }
         }
     }
