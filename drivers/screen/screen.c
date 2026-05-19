@@ -119,7 +119,7 @@ void dtext(int32_t x, int32_t y, uint16_t fg, const char *text)
     }
 }
 
-void updateBufferstr(char *arg, char *buffer, int *count)
+static void dprint_update_buffer_str(char *arg, char *buffer, int *count)
 {
     for (int j = 0; arg[j] != '\0'; j++) {
         buffer[*count] = arg[j];
@@ -127,7 +127,7 @@ void updateBufferstr(char *arg, char *buffer, int *count)
     }
 }
 
-void updateBuffernb(int32_t nb, char *buffer, int *count)
+static void dprint_update_buffer_nb(int32_t nb, char *buffer, int *count)
 {
     if (nb < 0) {
         buffer[*count] = ('-');
@@ -135,7 +135,7 @@ void updateBuffernb(int32_t nb, char *buffer, int *count)
         nb = nb * -1;
     }
     if (nb > 9) {
-        updateBuffernb(nb / 10, buffer, count);
+        dprint_update_buffer_nb(nb / 10, buffer, count);
     }
     buffer[*count] = nb % 10 + '0';
     (*count)++;
@@ -158,10 +158,10 @@ static char handle_hex_char(int nb)
     return nb + '0';
 }
 
-void updateBufferhex(uint32_t nb, char *buffer, int *count)
+static void dprint_update_buffer_hex(uint32_t nb, char *buffer, int *count)
 {
     if (nb > 16) {
-        updateBufferhex(nb / 16, buffer, count);
+        dprint_update_buffer_hex(nb / 16, buffer, count);
     }
     buffer[*count] = handle_hex_char(nb % 16);
     (*count)++;
@@ -178,19 +178,19 @@ void dprint_opt(int32_t x, int32_t y, uint16_t fg, uint16_t bg, uint8_t halign, 
     for (int i = 0; format[i] != '\0'; i++) {
         if (format[i] == '%' && format[i + 1] == 's') {
             char *tempbuff = va_arg(args, char *);
-            updateBufferstr(tempbuff, buffer, &count);
+            dprint_update_buffer_str(tempbuff, buffer, &count);
             i++;
         } else if (format[i] == '%' && format[i + 1] == 'd') {
             int32_t nbr = va_arg(args, int);
-            updateBuffernb(nbr, buffer, &count);
+            dprint_update_buffer_nb(nbr, buffer, &count);
             i++;
         } else if (format[i] == '%' && format[i + 1] == 'x') {
             int32_t nbr = va_arg(args, int);
-            updateBufferhex(nbr, buffer, &count);
+            dprint_update_buffer_hex(nbr, buffer, &count);
             i++;
         } else if (format[i] == '%' && format[i + 1] == 'p') {
             void *p = va_arg(args, void *);
-            updateBufferhex((uint32_t)p, buffer, &count);
+            dprint_update_buffer_hex((uint32_t)p, buffer, &count);
             i++;
         } else {
             buffer[count] = format[i];
@@ -212,19 +212,19 @@ void dprint(int x, int y, int fg, const char *format, ...)
     for (int i = 0; format[i] != '\0'; i++) {
         if (format[i] == '%' && format[i + 1] == 's') {
             char *tempbuff = va_arg(args, char *);
-            updateBufferstr(tempbuff, buffer, &count);
+            dprint_update_buffer_str(tempbuff, buffer, &count);
             i++;
         } else if (format[i] == '%' && format[i + 1] == 'd') {
             int32_t nbr = va_arg(args, int);
-            updateBuffernb(nbr, buffer, &count);
+            dprint_update_buffer_nb(nbr, buffer, &count);
             i++;
         } else if (format[i] == '%' && format[i + 1] == 'x') {
             int32_t nbr = va_arg(args, int);
-            updateBufferhex(nbr, buffer, &count);
+            dprint_update_buffer_hex(nbr, buffer, &count);
             i++;
         } else if (format[i] == '%' && format[i + 1] == 'p') {
             void *p = va_arg(args, void *);
-            updateBufferhex((uint32_t)p, buffer, &count);
+            dprint_update_buffer_hex((uint32_t)p, buffer, &count);
             i++;
         } else {
             buffer[count] = format[i];
@@ -246,19 +246,19 @@ void dprint_size(int32_t *width, int32_t *height, const char *format, ...)
     for (int i = 0; format[i] != '\0'; i++) {
         if (format[i] == '%' && format[i + 1] == 's') {
             char *tempbuff = va_arg(args, char *);
-            updateBufferstr(tempbuff, buffer, &count);
+            dprint_update_buffer_str(tempbuff, buffer, &count);
             i++;
         } else if (format[i] == '%' && format[i + 1] == 'd') {
             int32_t nbr = va_arg(args, int);
-            updateBuffernb(nbr, buffer, &count);
+            dprint_update_buffer_nb(nbr, buffer, &count);
             i++;
         } else if (format[i] == '%' && format[i + 1] == 'x') {
             int32_t nbr = va_arg(args, int);
-            updateBufferhex(nbr, buffer, &count);
+            dprint_update_buffer_hex(nbr, buffer, &count);
             i++;
         } else if (format[i] == '%' && format[i + 1] == 'p') {
             void *p = va_arg(args, void *);
-            updateBufferhex((uint32_t)p, buffer, &count);
+            dprint_update_buffer_hex((uint32_t)p, buffer, &count);
             i++;
         } else {
             buffer[count] = format[i];
