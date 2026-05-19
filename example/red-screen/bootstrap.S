@@ -3,8 +3,8 @@
 .section .text.utils, "x"
 .global cpu_get_stack
 cpu_get_stack:
-    ldr r0, =stack_pointer_user
-    ldr r0, [r0]
+    mov r0, sp
+    bx lr
 
 .section .text.bootstrap, "x"
 .global _bootstrap
