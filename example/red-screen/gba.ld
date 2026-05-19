@@ -16,9 +16,10 @@ SECTIONS {
         /* Force _bootstrap to be loaded first */
         /* For more info, see `info ld` section 3.5.1 */
         /* Can verify the order of symbols / sections with `arm-none-eabi-objdump -D <filename>.elf` */
-        _bootstrap = .;
+        KEEP(*(.text.bootstrap));
 
         /* Rest of the code binary */
+        KEEP(*(.text.*));
         KEEP(*(.text));
     } > game_pack
 

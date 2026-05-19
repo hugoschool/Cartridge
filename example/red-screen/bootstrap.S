@@ -1,10 +1,12 @@
 .text
 
+.section .text.utils, "x"
 .global cpu_get_stack
 cpu_get_stack:
     ldr r0, =stack_pointer_user
     ldr r0, [r0]
 
+.section .text.bootstrap, "x"
 .global _bootstrap
 _bootstrap:
     // make sure the instruction set is ARM and not THUMB
