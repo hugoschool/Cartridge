@@ -167,29 +167,25 @@ static void dprint_update_buffer_hex(uint32_t nb, char *buffer, int *count)
     (*count)++;
 }
 
-void dprint_opt(int32_t x, int32_t y, uint16_t fg, uint16_t bg, uint8_t halign, uint8_t valign, const char *format, ...)
+static void dvsprint_opt(char *buffer, const char *format, va_list *args)
 {
-    va_list args;
-    char buffer[BUFFER_SIZE];
-    for (int i = 0; i < BUFFER_SIZE; i++)
-        buffer[i] = '\0';
     int count = 0;
-    va_start(args, format);
+
     for (int i = 0; format[i] != '\0'; i++) {
         if (format[i] == '%' && format[i + 1] == 's') {
-            char *tempbuff = va_arg(args, char *);
+            char *tempbuff = va_arg(*args, char *);
             dprint_update_buffer_str(tempbuff, buffer, &count);
             i++;
         } else if (format[i] == '%' && format[i + 1] == 'd') {
-            int32_t nbr = va_arg(args, int);
+            int32_t nbr = va_arg(*args, int);
             dprint_update_buffer_nb(nbr, buffer, &count);
             i++;
         } else if (format[i] == '%' && format[i + 1] == 'x') {
-            int32_t nbr = va_arg(args, int);
+            int32_t nbr = va_arg(*args, int);
             dprint_update_buffer_hex(nbr, buffer, &count);
             i++;
         } else if (format[i] == '%' && format[i + 1] == 'p') {
-            void *p = va_arg(args, void *);
+            void *p = va_arg(*args, void *);
             dprint_update_buffer_hex((uint32_t)p, buffer, &count);
             i++;
         } else {
@@ -197,74 +193,47 @@ void dprint_opt(int32_t x, int32_t y, uint16_t fg, uint16_t bg, uint8_t halign, 
             count++;
         }
     }
-    va_end(args);
+}
+
+static void dvprint_opt(int32_t x, int32_t y, uint16_t fg, uint16_t bg, uint8_t halign, uint8_t valign, const char *format, va_list *args)
+{
+    char buffer[BUFFER_SIZE];
+
+    for (int i = 0; i < BUFFER_SIZE; i++)
+        buffer[i] = '\0';
+    dvsprint_opt(buffer, format, args);
     dtext_opt(x, y, fg, bg, halign, valign, buffer);
+}
+
+void dprint_opt(int32_t x, int32_t y, uint16_t fg, uint16_t bg, uint8_t halign, uint8_t valign, const char *format, ...)
+{
+    va_list args;
+
+    va_start(args, format);
+    dvprint_opt(x, y, fg, bg, halign, valign, format, &args);
+    va_end(args);
 }
 
 void dprint(int x, int y, int fg, const char *format, ...)
 {
     va_list args;
-    char buffer[BUFFER_SIZE];
-    for (int i = 0; i < BUFFER_SIZE; i++)
-        buffer[i] = '\0';
-    int count = 0;
+
     va_start(args, format);
-    for (int i = 0; format[i] != '\0'; i++) {
-        if (format[i] == '%' && format[i + 1] == 's') {
-            char *tempbuff = va_arg(args, char *);
-            dprint_update_buffer_str(tempbuff, buffer, &count);
-            i++;
-        } else if (format[i] == '%' && format[i + 1] == 'd') {
-            int32_t nbr = va_arg(args, int);
-            dprint_update_buffer_nb(nbr, buffer, &count);
-            i++;
-        } else if (format[i] == '%' && format[i + 1] == 'x') {
-            int32_t nbr = va_arg(args, int);
-            dprint_update_buffer_hex(nbr, buffer, &count);
-            i++;
-        } else if (format[i] == '%' && format[i + 1] == 'p') {
-            void *p = va_arg(args, void *);
-            dprint_update_buffer_hex((uint32_t)p, buffer, &count);
-            i++;
-        } else {
-            buffer[count] = format[i];
-            count++;
-        }
-    }
+    dvprint_opt(x, y, fg, TFT_WHITE, DTEXT_VALIGN_LEFT, DTEXT_HALIGN_TOP, format, &args);
     va_end(args);
-    dtext(x, y, fg, buffer);
 }
 
 void dprint_size(int32_t *width, int32_t *height, const char *format, ...)
 {
     va_list args;
+
     char buffer[BUFFER_SIZE];
     for (int i = 0; i < BUFFER_SIZE; i++)
         buffer[i] = '\0';
-    int count = 0;
+
     va_start(args, format);
-    for (int i = 0; format[i] != '\0'; i++) {
-        if (format[i] == '%' && format[i + 1] == 's') {
-            char *tempbuff = va_arg(args, char *);
-            dprint_update_buffer_str(tempbuff, buffer, &count);
-            i++;
-        } else if (format[i] == '%' && format[i + 1] == 'd') {
-            int32_t nbr = va_arg(args, int);
-            dprint_update_buffer_nb(nbr, buffer, &count);
-            i++;
-        } else if (format[i] == '%' && format[i + 1] == 'x') {
-            int32_t nbr = va_arg(args, int);
-            dprint_update_buffer_hex(nbr, buffer, &count);
-            i++;
-        } else if (format[i] == '%' && format[i + 1] == 'p') {
-            void *p = va_arg(args, void *);
-            dprint_update_buffer_hex((uint32_t)p, buffer, &count);
-            i++;
-        } else {
-            buffer[count] = format[i];
-            count++;
-        }
-    }
-    (*width) = font.mono.glyph.width * my_strlen(buffer);
-    (*height) = font.mono.glyph.height;
+    dvsprint_opt(buffer, format, &args);
+    va_end(args);
+
+    dtext_size(width, height, buffer);
 }
