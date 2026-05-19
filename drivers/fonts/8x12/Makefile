@@ -7,6 +7,8 @@ CPU	:=	arm7tdmi
 CFLAGS	:=	-Wall -Wextra
 CPPFLAGS	:=	-I ../../../include
 
+default:	libfont.a
+
 libfont.a:	font.o
 	$(AR) rc $@ $^
 

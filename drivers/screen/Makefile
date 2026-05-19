@@ -7,6 +7,8 @@ CPU	:=	arm7tdmi
 CFLAGS	:=	-Wall -Wextra
 CPPFLAGS	:=	-I ../../include
 
+default:	libscreen.a
+
 libscreen.a:	screen.o
 	$(AR) rc $@ $^
 
