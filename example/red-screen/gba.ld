@@ -16,9 +16,10 @@ SECTIONS {
         /* Force _bootstrap to be loaded first */
         /* For more info, see `info ld` section 3.5.1 */
         /* Can verify the order of symbols / sections with `arm-none-eabi-objdump -D <filename>.elf` */
-        _bootstrap = .;
+        KEEP(*(.text.bootstrap));
 
         /* Rest of the code binary */
+        KEEP(*(.text.*));
         KEEP(*(.text));
     } > game_pack
 
@@ -26,3 +27,9 @@ SECTIONS {
         KEEP(*(.rodata));
     } > game_pack
 }
+
+/* Very useful to determine this:
+* https://blog.thea.codes/the-most-thoroughly-commented-linker-script/ */
+ROM_SIZE = LENGTH(game_pack);
+CODE_SIZE = SIZEOF(.text);
+RODATA_SIZE = SIZEOF(.rodata);

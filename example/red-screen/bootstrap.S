@@ -1,6 +1,13 @@
 .text
-.global _bootstrap
 
+.section .text.utils, "x"
+.global cpu_get_stack
+cpu_get_stack:
+    mov r0, sp
+    bx lr
+
+.section .text.bootstrap, "x"
+.global _bootstrap
 _bootstrap:
     // make sure the instruction set is ARM and not THUMB
     // see `info as` but this effectively does the same as `.code 32`
@@ -21,6 +28,11 @@ _bootstrap:
     ldr sp, [r0]
 
     // Calling into our own C main function
+    // Passing CPSR as the first argument
+    mrs r0, cpsr
+    // Passing IME as the second argument
+    ldr r1, =ime_addr
+    ldr r1, [r1]
     b main
 
 // ---
@@ -29,9 +41,5 @@ _bootstrap:
 .balign 4
 stack_pointer_user:
     .long 0x03007F00
-vram_addr:
-    .long 0x06000000
-reg_dispcnt_addr:
-    .long 0x04000000
-reg_dispcnt_config:
-    .word 0x0403
+ime_addr:
+    .long 0x04000208

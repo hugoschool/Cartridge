@@ -1,6 +1,8 @@
 #ifndef CARTRIDGE_UTIL_H_
     #define CARTRIDGE_UTIL_H_
 
+    #include <stdint.h>
+
 /* Packed structures. I require explicit alignment because if it's unspecified,
    GCC cannot optimize access size, and reads to memory-mapped I/O with invalid
    access sizes silently fail - honestly you don't want this to happen */
@@ -17,5 +19,14 @@
         uint16_t word;                  \
         struct { fields } MYPACKED(2);  \
     } MYPACKED(2) name
+
+extern uint32_t ROM_SIZE;
+extern uint32_t CODE_SIZE;
+extern uint32_t RODATA_SIZE;
+
+extern uint32_t cpu_get_stack();
+extern uint32_t rom_get_size();
+extern uint32_t code_get_size();
+extern uint32_t const_get_size();
 
 #endif

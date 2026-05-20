@@ -160,7 +160,7 @@ static char handle_hex_char(int nb)
 
 static void dprint_update_buffer_hex(uint32_t nb, char *buffer, int *count)
 {
-    if (nb > 16) {
+    if (nb > 15) {
         dprint_update_buffer_hex(nb / 16, buffer, count);
     }
     buffer[*count] = handle_hex_char(nb % 16);
@@ -181,7 +181,7 @@ static void dvsprint_opt(char *buffer, const char *format, va_list *args)
             dprint_update_buffer_nb(nbr, buffer, &count);
             i++;
         } else if (format[i] == '%' && format[i + 1] == 'x') {
-            int32_t nbr = va_arg(*args, int);
+            uint32_t nbr = va_arg(*args, int);
             dprint_update_buffer_hex(nbr, buffer, &count);
             i++;
         } else if (format[i] == '%' && format[i + 1] == 'p') {
