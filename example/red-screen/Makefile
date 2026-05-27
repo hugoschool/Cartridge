@@ -15,7 +15,7 @@ LDLIBS	:=	-lkernel
 default:	redscreen.gba
 
 redscreen.elf:	main.o
-	$(CC) -mcpu=$(CPU) -mlittle-endian -nostdlib -T gba.ld -o $@ $^ $(LDFLAGS) $(LDLIBS)
+	$(CC) -mcpu=$(CPU) -mlittle-endian -nostdlib -T $(ROOT_DIR)/src/gba.ld -o $@ $^ $(LDFLAGS) $(LDLIBS)
 
 main.o:	main.c
 	$(CC) -mcpu=$(CPU) $(CFLAGS) $(CPPFLAGS) -o $@ -c $^ $(LDFLAGS) $(LDLIBS)
