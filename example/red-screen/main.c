@@ -1,5 +1,6 @@
-#include "drivers/screen/screen.h"
-#include "utils.h"
+#include "cartridge/hardware/lcd.h"
+#include "cartridge/display.h"
+#include "cartridge/utils.h"
 #include <stdint.h>
 
 int main(uint32_t CPSR, uint32_t IME)

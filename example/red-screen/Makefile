@@ -1,25 +1,24 @@
+ROOT_DIR	:=	../..
+
 CC	:=	arm-none-eabi-gcc
 OBJCOPY	:=	arm-none-eabi-objcopy
-CARTRIDGE	:=	../../cartridge
+CARTRIDGE	:=	$(ROOT_DIR)/cartridge
 
 CPU	:=	arm7tdmi
 
 # Remove warnings about the main function, see bootstrap.S
 CFLAGS	:=	-Wall -Wextra -Wno-main
-CPPFLAGS	:=	-I ../../include
-LDFLAGS	:=	-L ../../drivers
-LDLIBS	:=	-l:screen/libscreen.a -l:fonts/8x12/libfont.a
+CPPFLAGS	:=	-I $(ROOT_DIR)/include
+LDFLAGS	:=	-L $(ROOT_DIR)/src
+LDLIBS	:=	-lkernel
 
 default:	redscreen.gba
 
-redscreen.elf:	bootstrap.S main.o ../../utils/utils.o
+redscreen.elf:	main.o
 	$(CC) -mcpu=$(CPU) -mlittle-endian -nostdlib -T gba.ld -o $@ $^ $(LDFLAGS) $(LDLIBS)
 
 main.o:	main.c
-	$(CC) -mcpu=$(CPU) $(CFLAGS) $(CPPFLAGS) -o $@ -c $^ -L /usr/arm-none-eabi/lib -lc
-
-../../utils/utils.o:	../../utils/utils.c
-	$(CC) -mcpu=$(CPU) $(CFLAGS) $(CPPFLAGS) -o $@ -c $^
+	$(CC) -mcpu=$(CPU) $(CFLAGS) $(CPPFLAGS) -o $@ -c $^ $(LDFLAGS) $(LDLIBS)
 
 redscreen.bin:	redscreen.elf
 	$(OBJCOPY) -O binary $^ $@

@@ -1,9 +1,10 @@
-#ifndef CARTRIDGE_DRIVER_SCREEN_H_
-    #define CARTRIDGE_DRIVER_SCREEN_H_
+#ifndef CARTRIDGE_HARDWARE_LCD_H_
+    #define CARTRIDGE_HARDWARE_LCD_H_
 
-    #include "utils.h"
+    #include "cartridge/utils.h"
     #include <stdint.h>
 
+// Display handling
 #define COLOR(r, g, b) 0x0000 | b << 11 | g << 5 | r << 1
 
 #define BUFFER_SIZE 256
@@ -70,59 +71,4 @@ typedef struct {
 
 #define VRAM_ADDR (uint16_t *)0x06000000
 
-// Initializes the entire screen
-extern void dinit(void);
-
-// Clears the whole screen with a specified color
-extern void dclear(uint16_t color);
-
-// Places a singular pixel on the screen
-extern void dpixel(int16_t x, int16_t y, uint16_t color);
-
-// Displays a singular char to the screen with a transparent background
-void dchar(int32_t x, int32_t y, uint16_t fg, uint8_t c);
-// Displays a singular char to the screen
-void dchar_opt(int32_t x, int32_t y, uint16_t fg, uint16_t bg, uint8_t c);
-
-// Displays a string to the screen
-extern void dtext_opt(
-    int32_t x, int32_t y,
-    uint16_t fg, uint16_t bg,
-    uint8_t halign,
-    uint8_t valign,
-    char const *str
-);
-
-// dtext_opt with default parameters:
-// bg = C_NONE, halign = DTEXT_LEFT and valign = DTEXT_TOP
-extern void dtext(int32_t x, int32_t y, uint16_t fg, char const *text);
-
-// Similarily as how printf works
-void dprint_opt(
-    int32_t x, int32_t y,
-    uint16_t fg, uint16_t bg,
-    uint8_t halign,
-    uint8_t valign,
-    char const *format,
-    ...
-);
-
-// dprint_opt with default parameters:
-// bg = C_NONE, halign = DTEXT_LEFT and valign = DTEXT_TOP
-extern void dprint(int x, int y, int fg, char const *format, ...);
-
-// Get the width and height of rendered text
-extern void dtext_size(
-    int32_t *width,
-    int32_t *height,
-    char const *str
-);
-
-// Get the width and height of rendered formatted string
-extern void dprint_size(
-    int32_t *width,
-    int32_t *height,
-    char const *format,
-    ...
-);
 #endif

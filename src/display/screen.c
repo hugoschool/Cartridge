@@ -1,5 +1,5 @@
-#include "drivers/screen/screen.h"
-#include "drivers/fonts/fonts.h"
+#include "cartridge/hardware/lcd.h"
+#include "cartridge/display.h"
 #include <stdarg.h>
 
 void dinit(void)

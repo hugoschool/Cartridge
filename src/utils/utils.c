@@ -1,4 +1,4 @@
-#include "utils.h"
+#include "cartridge/utils.h"
 #include <stdint.h>
 
 uint32_t rom_get_size()
