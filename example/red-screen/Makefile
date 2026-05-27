@@ -9,13 +9,19 @@ CPU	:=	arm7tdmi
 # Remove warnings about the main function, see bootstrap.S
 CFLAGS	:=	-Wall -Wextra -Wno-main
 CPPFLAGS	:=	-I $(ROOT_DIR)/include
+
+LIBKERNEL	:=	libkernel.a
+
 LDFLAGS	:=	-L $(ROOT_DIR)/src
-LDLIBS	:=	-lkernel
+LDLIBS	:=	-l:$(LIBKERNEL)
 
 default:	redscreen.gba
 
-redscreen.elf:	main.o
+redscreen.elf:	main.o $(ROOT_DIR)/src/$(LIBKERNEL)
 	$(CC) -mcpu=$(CPU) -mlittle-endian -nostdlib -T $(ROOT_DIR)/src/gba.ld -o $@ $^ $(LDFLAGS) $(LDLIBS)
+
+$(ROOT_DIR)/src/$(LIBKERNEL):
+	$(MAKE) -C $(ROOT_DIR)/src $(LIBKERNEL)
 
 main.o:	main.c
 	$(CC) -mcpu=$(CPU) $(CFLAGS) $(CPPFLAGS) -o $@ -c $^ $(LDFLAGS) $(LDLIBS)

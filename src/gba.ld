@@ -1,7 +1,7 @@
 /* custom linker script in order to generate a GameBoyAdvance binary */
 OUTPUT_FORMAT("elf32-littlearm","elf32-bigarm","elf32-littlearm")
 OUTPUT_ARCH(arm)
-ENTRY(_bootstrap)
+ENTRY(kernel_init)
 
 /* address only the cartridge memory area
 * @notes :
@@ -13,10 +13,10 @@ MEMORY {
 
 SECTIONS {
     .text : {
-        /* Force _bootstrap to be loaded first */
+        /* Force kernel_init to be loaded first */
         /* For more info, see `info ld` section 3.5.1 */
         /* Can verify the order of symbols / sections with `arm-none-eabi-objdump -D <filename>.elf` */
-        KEEP(*(.text.bootstrap));
+        KEEP(*(.text.init));
 
         /* Rest of the code binary */
         KEEP(*(.text.*));

@@ -8,7 +8,7 @@ CFLAGS	:=	-Wall -Wextra
 CPPFLAGS	:=	-I $(ROOT_DIR)/include
 
 # Kernel
-KERNEL_ASM_SRC	:=	kernel/bootstrap.S
+KERNEL_SRC	:=	kernel/init.c
 
 # Display
 DISPLAY_SRC	:=	display/font.c \
@@ -16,10 +16,12 @@ DISPLAY_SRC	:=	display/font.c \
 
 # Utils
 UTILS_SRC	:=	utils/utils.c
+UTILS_ASM_SRC	:=	utils/cpu_get_stack.S
 
-OBJ	:=	$(KERNEL_ASM_SRC:.S=.o) \
+OBJ	:=	$(KERNEL_SRC:.c=.o) \
 		$(DISPLAY_SRC:.c=.o) \
-		$(UTILS_SRC:.c=.o)
+		$(UTILS_SRC:.c=.o) \
+		$(UTILS_ASM_SRC:.S=.o)
 
 default:	libkernel.a
 
