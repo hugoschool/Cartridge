@@ -1,3 +1,4 @@
+#include "cartridge/drivers.h"
 #include "cartridge/hardware/lcd.h"
 
 void gba_lcd_vram_clear(uint16_t color)
@@ -18,3 +19,12 @@ void gba_lcd_vram_dpixel(int16_t x, int16_t y, uint16_t color)
     VRAM[size] = color;
 }
 
+static void gba_lcd_configure(void)
+{
+    GBA_LCD.DISPCNT.word = DISPCNT_CONFIG;
+}
+
+CARTRIDGE_DECLARE_DRIVER(01, gba_lcd,
+    .name = "LCD",
+    .configure = &gba_lcd_configure,
+);

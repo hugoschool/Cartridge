@@ -24,6 +24,14 @@ SECTIONS {
     } > game_pack
 
     .rodata : {
+        /* Define the start of the array pointer */
+        __cartridge_drivers_start = .;
+
+        KEEP(*(SORT_BY_NAME(.cartridge.drivers.*)));
+
+        /* Define the end of the array pointer */
+        __cartridge_drivers_end = .;
+
         KEEP(*(.rodata));
     } > game_pack
 }

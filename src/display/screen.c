@@ -2,11 +2,6 @@
 #include "cartridge/display.h"
 #include <stdarg.h>
 
-void dinit(void)
-{
-    GBA_LCD.DISPCNT.word = DISPCNT_CONFIG;
-}
-
 void dclear(uint16_t color)
 {
     gba_lcd_vram_clear(color);

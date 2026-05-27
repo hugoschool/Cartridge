@@ -75,9 +75,6 @@ enum {
     DTEXT_HALIGN_BOTTOM = 2,
 };
 
-// Initializes the entire screen
-extern void dinit(void);
-
 // Clears the whole screen with a specified color
 extern void dclear(uint16_t color);
 
