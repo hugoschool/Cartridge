@@ -3,7 +3,7 @@
 #include "cartridge/utils.h"
 #include <stdint.h>
 
-int main(uint32_t CPSR, uint32_t IME)
+void main(void)
 {
     uint32_t stack_addr = cpu_get_stack();
     uint32_t rom_size = rom_get_size();
@@ -22,8 +22,7 @@ int main(uint32_t CPSR, uint32_t IME)
     dprint_opt(1, 32, TFT_WHITE, TFT_BLACK, DTEXT_HALIGN_TOP, DTEXT_VALIGN_LEFT, "Code: %d", code_size);
     dprint_opt(1, 44, TFT_WHITE, TFT_BLACK, DTEXT_HALIGN_TOP, DTEXT_VALIGN_LEFT, "read-only data: %d", const_size);
     dprint_opt(1, 56, TFT_WHITE, TFT_BLACK, DTEXT_HALIGN_TOP, DTEXT_VALIGN_LEFT, "stack: %p", stack_addr);
-    dprint_opt(1, 68, TFT_WHITE, TFT_BLACK, DTEXT_HALIGN_TOP, DTEXT_VALIGN_LEFT, "CPSR: %x", CPSR);
-    dprint_opt(1, 80, TFT_WHITE, TFT_BLACK, DTEXT_HALIGN_TOP, DTEXT_VALIGN_LEFT, "IME: %x", IME);
+    // dprint_opt(1, 68, TFT_WHITE, TFT_BLACK, DTEXT_HALIGN_TOP, DTEXT_VALIGN_LEFT, "CPSR: %x", CPSR);
+    // dprint_opt(1, 80, TFT_WHITE, TFT_BLACK, DTEXT_HALIGN_TOP, DTEXT_VALIGN_LEFT, "IME: %x", IME);
     while (1);
-    return 0;
 }
