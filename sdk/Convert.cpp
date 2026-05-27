@@ -96,7 +96,7 @@ void Cartridge::Convert::exportAsCMonospaced(std::string outputPath)
     stream << "// Please do not modify manually." << std::endl;
     stream << std::endl;
 
-    stream << "#include \"drivers/fonts/fonts.h\"" << std::endl;
+    stream << "#include \"cartridge/display.h\"" << std::endl;
     stream << std::endl;
 
     stream << "const gba_font_t font = {" << std::endl;

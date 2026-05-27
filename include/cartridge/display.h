@@ -1,12 +1,47 @@
-#ifndef CARTRIDGE_DRIVER_SCREEN_H_
-    #define CARTRIDGE_DRIVER_SCREEN_H_
+#ifndef CARTRIDGE_DISPLAY_H_
+    #define CARTRIDGE_DISPLAY_H_
 
-    #include "utils.h"
+    #include <stddef.h>
     #include <stdint.h>
 
-#define COLOR(r, g, b) 0x0000 | b << 11 | g << 5 | r << 1
+// Font handling
+// ---------------------------------------------------------------------------
 
-#define BUFFER_SIZE 256
+struct gba_font_monospaced_s {
+    struct {
+        size_t width;
+        size_t height;
+    } glyph;
+    uint8_t *bitmap;
+};
+
+struct gba_font_proportional_s {
+    struct {
+        size_t width;
+        size_t height;
+    } glyph[128];
+    uint8_t *bitmap;
+};
+
+enum gba_font_type {
+    MONOSPACED,
+    PROPORTIONAL
+};
+
+typedef struct gba_font_s {
+    enum gba_font_type type;
+    union {
+        struct gba_font_monospaced_s mono;
+        struct gba_font_proportional_s prop;
+    };
+} gba_font_t;
+
+extern const gba_font_t font;
+
+// Color handling
+// ---------------------------------------------------------------------------
+
+#define COLOR(r, g, b) 0x0000 | b << 11 | g << 5 | r << 1
 
 typedef enum {
     TFT_BLACK = COLOR(0, 0, 0),
@@ -18,6 +53,12 @@ typedef enum {
     TFT_CYAN = COLOR(16, 22, 31),
     TFT_GOLD = COLOR(30, 25, 16),
 } color_full_t;
+
+// Display handling
+// ---------------------------------------------------------------------------
+
+// Define a max buffer size
+#define BUFFER_SIZE 256
 
 // Alignment settings for dtext_opt() and dprint_opt().
 // Combining a vertical and a horizontal alignment option
@@ -33,45 +74,6 @@ enum {
     DTEXT_HALIGN_MIDDLE = 1,
     DTEXT_HALIGN_BOTTOM = 2,
 };
-
-//---
-// GBA LCD peripheral. Refer to:
-// "GBATEK : LCD I/O Video Controller"
-//---
-typedef struct {
-    // I/O configuraton
-    word_union(DISPCNT,
-        uint16_t BG_MODE     :2; // Video Mode
-        uint16_t             :1; // reserved
-        uint16_t DFS         :1; // Display Frame Select
-        uint16_t HBIF        :1; // H-Blank Interval Free
-        uint16_t OCVM        :1; // OBJ Character VRAM Mapping
-        uint16_t FB          :1; // Force Blank
-        uint16_t BG0         :1; // Enable Screen Display Background 0
-        uint16_t BG1         :1; // Enable Screen Display Background 1
-        uint16_t BG2         :1; // Enable Screen Display Background 2
-        uint16_t BG3         :1; // Enable Screen Display Background 3
-        uint16_t OBJ         :1; // Enable Screen Display OBJ
-        uint16_t WDF0        :1; // Window Display Flag 0
-        uint16_t WDF1        :1; // Window Display Flag 1
-        uint16_t WDFOBJ      :1; // Window Display Flag OBJ
-    );
-    // TODO: only use what's interesting for now, rest later
-} MYPACKED(2) GBA_lcd_t;
-
-#define GBA_LCD (*(volatile GBA_lcd_t *)0x04000000)
-
-// Default configuration of DISPCNT
-#define DISPCNT_CONFIG 0x0403
-
-// The default screen width / height of the GBA
-#define SCREEN_WIDTH 240
-#define SCREEN_HEIGHT 160
-
-#define VRAM_ADDR (uint16_t *)0x06000000
-
-// Initializes the entire screen
-extern void dinit(void);
 
 // Clears the whole screen with a specified color
 extern void dclear(uint16_t color);
