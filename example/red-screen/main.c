@@ -10,7 +10,6 @@ void main(void)
     uint32_t code_size = code_get_size();
     uint32_t const_size = const_get_size();
 
-    dinit();
     dclear(TFT_BLACK);
     dtext_opt(
         SCREEN_WIDTH / 2, 12,
