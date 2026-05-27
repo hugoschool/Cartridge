@@ -38,8 +38,42 @@ typedef struct gba_font_s {
 
 extern const gba_font_t font;
 
+// Color handling
+// ---------------------------------------------------------------------------
+
+#define COLOR(r, g, b) 0x0000 | b << 11 | g << 5 | r << 1
+
+typedef enum {
+    TFT_BLACK = COLOR(0, 0, 0),
+    TFT_BLUE = COLOR(0, 0, 31),
+    TFT_RED = COLOR(31, 0, 0),
+    TFT_GREEN = COLOR(0, 31, 0),
+    TFT_WHITE = COLOR(31, 31, 31),
+    TFT_PURPLE = COLOR(15, 0, 30),
+    TFT_CYAN = COLOR(16, 22, 31),
+    TFT_GOLD = COLOR(30, 25, 16),
+} color_full_t;
+
 // Display handling
 // ---------------------------------------------------------------------------
+
+// Define a max buffer size
+#define BUFFER_SIZE 256
+
+// Alignment settings for dtext_opt() and dprint_opt().
+// Combining a vertical and a horizontal alignment option
+// specifies where a given point (x, y) should be relative to the rendered string
+enum {
+    // Horizontal settings: default in dtext() is DTEXT_LEFT
+    DTEXT_VALIGN_LEFT = 0,
+    DTEXT_VALIGN_CENTER = 1,
+    DTEXT_VALIGN_RIGHT = 2,
+
+    // Vertical settings: default in dtext() is DTEXT_TOP
+    DTEXT_HALIGN_TOP = 0,
+    DTEXT_HALIGN_MIDDLE = 1,
+    DTEXT_HALIGN_BOTTOM = 2,
+};
 
 // Initializes the entire screen
 extern void dinit(void);
