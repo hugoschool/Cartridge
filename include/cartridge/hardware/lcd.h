@@ -26,10 +26,31 @@ typedef struct {
         uint16_t WDF1        :1; // Window Display Flag 1
         uint16_t WDFOBJ      :1; // Window Display Flag OBJ
     );
+    // DISPGW: Green-swap (undocumented register)
+    word_union(DISPGW,
+        uint16_t SWAP   :1;     // Enable green SWAP
+        uint16_t        :15;    // reserved
+    );
+    // General LCD Status
+    word_union(DISPSTAT,
+        uint16_t const VBF  :1; // V - Blank Flag
+        uint16_t const HBF  :1; // H - Blank Flag
+        uint16_t const VCF  :1; // V - Counter Flag
+        uint16_t VBIE       :1; // V - Blank IRQ Enable
+        uint16_t HBIE       :1; // H - Blank IRQ Enable
+        uint16_t VCIE       :1; // V - Counter IRQ Enable
+        uint16_t const      :1; // reserved
+        uint16_t const      :1; // reserved
+        uint16_t VCSET      :8; // V - Count Setting
+    );
     // TODO: only use what's interesting for now, rest later
 } MYPACKED(2) GBA_lcd_t;
 
 #define GBA_LCD (*(volatile GBA_lcd_t *)0x04000000)
+#define GBA_VRAM (volatile uint16_t *)0x06000000
+
+extern void gba_lcd_vram_clear(uint16_t color);
+extern void gba_lcd_vram_dpixel(int16_t x, int16_t y, uint16_t color);
 
 // Default configuration of DISPCNT
 #define DISPCNT_CONFIG 0x0403
@@ -37,7 +58,5 @@ typedef struct {
 // The default screen width / height of the GBA
 #define SCREEN_WIDTH 240
 #define SCREEN_HEIGHT 160
-
-#define VRAM_ADDR (uint16_t *)0x06000000
 
 #endif
