@@ -9,6 +9,7 @@ ENTRY(kernel_init)
 * - other memory area will be cover soon .. */
 MEMORY {
     game_pack (rx) : ORIGIN = 0x080000c0, LENGTH = 32M
+    ram (rw) : ORIGIN = 0x03000000, LENGTH = 32K
 }
 
 SECTIONS {
@@ -34,6 +35,16 @@ SECTIONS {
 
         KEEP(*(.rodata));
     } > game_pack
+
+    .bss : {
+        KEEP(*(.bss));
+    } > ram
+
+    .data : {
+        __data_start = .;
+        KEEP(*(.data));
+        KEEP(*(.data.*));
+    } > ram AT>game_pack
 }
 
 /* Very useful to determine this:
@@ -41,3 +52,5 @@ SECTIONS {
 ROM_SIZE = LENGTH(game_pack);
 CODE_SIZE = SIZEOF(.text);
 RODATA_SIZE = SIZEOF(.rodata);
+DATA_SIZE = SIZEOF(.data);
+DATA_ADDR = LOADADDR(.data);
