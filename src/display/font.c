@@ -10,7 +10,7 @@ const gba_font_t font = {
 .width = 8,
 .height = 12,
 },
-.bitmap = (uint8_t []){
+.bitmap = (const uint8_t []){
 0b00000000,
 0b00000000,
 0b00000000,

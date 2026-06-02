@@ -47,6 +47,8 @@ typedef struct {
 } MYPACKED(2) GBA_lcd_t;
 
 #define GBA_LCD (*(volatile GBA_lcd_t *)0x04000000)
+
+// Must be uint16_t, not a pointer
 #define GBA_VRAM (volatile uint16_t *)0x06000000
 
 extern void gba_lcd_vram_clear(uint16_t color);

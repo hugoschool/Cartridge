@@ -15,6 +15,10 @@ LIBKERNEL	:=	libkernel.a
 LDFLAGS	:=	-L $(ROOT_DIR)/src
 LDLIBS	:=	-l:$(LIBKERNEL)
 
+ifeq ($(ENV), dev)
+	LDFLAGS	+=	-Wl,-Map=redscreen.map
+endif
+
 default:	redscreen.gba
 
 redscreen.elf:	main.o $(ROOT_DIR)/src/$(LIBKERNEL)
