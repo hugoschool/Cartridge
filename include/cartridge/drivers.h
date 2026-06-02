@@ -9,7 +9,7 @@ typedef struct {
 #define CARTRIDGE_DECLARE_DRIVER(level, name, ...) \
     __attribute__((unused)) \
     __attribute__((section((".cartridge.drivers." #level "." #name)))) \
-    static const cartridge_driver_t __cartridge_driver__##name = { \
+    const cartridge_driver_t __cartridge_driver__##name = { \
         __VA_ARGS__ \
     }
 
