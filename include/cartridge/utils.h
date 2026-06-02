@@ -1,6 +1,7 @@
 #ifndef CARTRIDGE_UTIL_H_
     #define CARTRIDGE_UTIL_H_
 
+    #include <stddef.h>
     #include <stdint.h>
 
 /* Packed structures. I require explicit alignment because if it's unspecified,
@@ -24,9 +25,16 @@ extern uint32_t ROM_SIZE;
 extern uint32_t CODE_SIZE;
 extern uint32_t RODATA_SIZE;
 
+// Data linker utils
+extern uint32_t DATA_SIZE;
+extern uint32_t __data_start;
+extern uint32_t DATA_ADDR;
+
 extern uint32_t cpu_get_stack();
 extern uint32_t rom_get_size();
 extern uint32_t code_get_size();
 extern uint32_t const_get_size();
+
+extern void *memcpy(void *dest, const void *src, size_t size);
 
 #endif

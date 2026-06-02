@@ -1,6 +1,8 @@
 #include "cartridge/display.h"
 #include "cartridge/drivers.h"
+#include "cartridge/utils.h"
 #include <stdbool.h>
+#include <stdint.h>
 
 extern int main(void);
 
@@ -18,9 +20,15 @@ static void kernel_initialize_drivers(void)
     }
 }
 
+static void kernel_initialize_data()
+{
+    memcpy(&__data_start, &DATA_ADDR, (uint32_t)&DATA_SIZE);
+}
+
 __attribute__((section(".text.init")))
 void kernel_init(void)
 {
+    kernel_initialize_data();
     kernel_initialize_drivers();
 
     main();
