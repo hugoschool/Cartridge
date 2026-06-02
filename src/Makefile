@@ -11,7 +11,8 @@ CPPFLAGS	:=	-I $(ROOT_DIR)/include
 KERNEL_SRC	:=	kernel/init.c
 
 # Hardware
-HARDWARE_LCD_SRC	:=	hardware/lcd.c
+HARDWARE_LCD_SRC	:=	hardware/lcd.c \
+						hardware/interrupts.c
 
 # Display
 DISPLAY_SRC	:=	display/font.c \
