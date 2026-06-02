@@ -15,13 +15,15 @@ LIBKERNEL	:=	libkernel.a
 LDFLAGS	:=	-L $(ROOT_DIR)/src
 LDLIBS	:=	-l:$(LIBKERNEL)
 
+NAME	:=	menu
+
 ifeq ($(ENV), dev)
-	LDFLAGS	+=	-Wl,-Map=redscreen.map
+	LDFLAGS	+=	-Wl,-Map=$(NAME).map
 endif
 
-default:	redscreen.gba
+default:	$(NAME).gba
 
-redscreen.elf:	main.o $(ROOT_DIR)/src/$(LIBKERNEL)
+$(NAME).elf:	main.o $(ROOT_DIR)/src/$(LIBKERNEL)
 	$(CC) -mcpu=$(CPU) -mlittle-endian -nostdlib -T $(ROOT_DIR)/src/gba.ld -o $@ $^ $(LDFLAGS) $(LDLIBS)
 
 $(ROOT_DIR)/src/$(LIBKERNEL):
@@ -30,19 +32,19 @@ $(ROOT_DIR)/src/$(LIBKERNEL):
 main.o:	main.c
 	$(CC) -mcpu=$(CPU) $(CFLAGS) $(CPPFLAGS) -o $@ -c $^ $(LDFLAGS) $(LDLIBS)
 
-redscreen.bin:	redscreen.elf
+$(NAME).bin:	$(NAME).elf
 	$(OBJCOPY) -O binary $^ $@
 
-redscreen.gba:	redscreen.bin
+$(NAME).gba:	$(NAME).bin
 	$(CARTRIDGE) header generate -o $@ -b $^
 
 clean:
 	$(RM) main.o
-	$(RM) redscreen.bin
-	$(RM) redscreen.elf
+	$(RM) $(NAME).bin
+	$(RM) $(NAME).elf
 
 fclean:	clean
-	$(RM) redscreen.gba
+	$(RM) $(NAME).gba
 
 re:	fclean default
 
