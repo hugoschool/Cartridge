@@ -12,7 +12,7 @@ struct gba_font_monospaced_s {
         size_t width;
         size_t height;
     } glyph;
-    uint8_t *bitmap;
+    const uint8_t *bitmap;
 };
 
 struct gba_font_proportional_s {
@@ -20,7 +20,7 @@ struct gba_font_proportional_s {
         size_t width;
         size_t height;
     } glyph[128];
-    uint8_t *bitmap;
+    const uint8_t *bitmap;
 };
 
 enum gba_font_type {

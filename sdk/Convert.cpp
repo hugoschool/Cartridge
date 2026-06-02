@@ -108,7 +108,7 @@ void Cartridge::Convert::exportAsCMonospaced(std::string outputPath)
     stream << ".width = " << _width << "," << std::endl;
     stream << ".height = " << _height << "," << std::endl;
     stream << "}," << std::endl;
-    stream << ".bitmap = (uint8_t []){" << std::endl;
+    stream << ".bitmap = (const uint8_t []){" << std::endl;
 
     if (_characters.size() == 96) {
         for (std::size_t i = 0; i < 128 - 96; i++) {
