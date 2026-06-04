@@ -135,13 +135,32 @@ void keypad_menu()
         "KEYPAD"
     );
 
+    dprint_opt(
+        1, 20,
+        TFT_WHITE, TFT_BLACK,
+        DTEXT_HALIGN_TOP, DTEXT_VALIGN_LEFT,
+        "KEYINPUT: %x", GBA_KEYPAD.KEYINPUT.word
+    );
     bool pressed = false;
+    for (int i = 0; i < KEY_AMOUNT; i++) {
+        if (gba_keypad_is_pressed(i) == true) {
+            pressed = true;
+            break;
+        }
+    }
     if (pressed == false) {
         dprint_opt(
-            1, 20,
+            1, 32,
             TFT_WHITE, TFT_BLACK,
             DTEXT_HALIGN_TOP, DTEXT_VALIGN_LEFT,
             "No key pressed for now..."
+        );
+    } else {
+        dprint_opt(
+            1, 32,
+            TFT_WHITE, TFT_BLACK,
+            DTEXT_HALIGN_TOP, DTEXT_VALIGN_LEFT,
+            "Shit was pressed u know"
         );
     }
 }
